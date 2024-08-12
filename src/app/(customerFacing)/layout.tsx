@@ -1,23 +1,16 @@
 import { Nav, NavLink } from "@/src/components/Nav"
-
+import Navbar from "@/src/components/Navbar"
 export const dynamic = "force-dynamic"
 
-export default function AdminLayout({
+export default function Layout({
     children,
 }: Readonly<{
     children: React.ReactNode
 }>) {
     return (
         <>
-            <Nav>
-                <NavLink href="/">Home</NavLink>
-                <NavLink href="/products">Products</NavLink>
-                <NavLink href="/appointments">Appointments</NavLink>
-                <NavLink href="/contact">Contact</NavLink>
-                
-
-            </Nav>
-            <div className="container my-6">{children}</div>
+            <Navbar />
+            <div className="overflow-hidden">{children}</div>
         </>
     )
 }

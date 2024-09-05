@@ -13,7 +13,7 @@ export default function AppointmentHome() {
             <p className="justify-items-end text-black xl:text-left">
               © 2024 Leaf Of Life Clinic
             </p>
-            <Link href="/?admin=true" className="text-green-500">
+            <Link href="/admin" className="text-green-500">
               Admin
             </Link>
           </div>

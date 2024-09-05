@@ -9,10 +9,13 @@ import { useState } from "react";
 import { addProduct, updateProduct } from "../../_actions/products";
 import { useFormState, useFormStatus } from "react-dom";
 import { Product } from "@prisma/client";
-import Image from "next/image"
+import Image from "next/image";
 
 export function ProductForm({ product }: { product?: Product | null }) {
-  const [error, action] = useFormState(product == null ? addProduct : updateProduct.bind(null, product.id), {});
+  const [error, action] = useFormState(
+    product == null ? addProduct : updateProduct.bind(null, product.id),
+    {}
+  );
   const [priceInCents, setPriceInCents] = useState<number | undefined>(
     product?.priceInCents
   );
@@ -59,6 +62,7 @@ export function ProductForm({ product }: { product?: Product | null }) {
           <div className="text-destructive">{error.description}</div>
         )}
       </div>
+
       <div className="space-y-2">
         <Label htmlFor="file">File</Label>
         <Input type="file" id="file" name="file" required={product === null} />

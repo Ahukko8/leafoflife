@@ -46,6 +46,7 @@ export async function addProduct(prevState: unknown, formData: FormData) {
       priceInCents: data.priceInCents,
       filePath,
       imagePath,
+      
     },
   });
 

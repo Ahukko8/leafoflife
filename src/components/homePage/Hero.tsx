@@ -24,12 +24,12 @@ const Hero = () => {
             wisdom and contemporary care for your overall health and well-being.
           </p>
           <div className="mt-6">
-            <Link href="/signup">
+            <Link href="/appointments">
               <Button className="text-lg max-sm:mb-2 bg-[#62A83c] hover:bg-[#3E3C37] mr-4 h-[60px] w-[195px] sm:mb-2">
                 GET APPOINTMENT
               </Button>
             </Link>
-            <Link href="/learn-more">
+            <Link href="/products">
               <Button className="text-[#62A83c] bg-transparent border-2 border-[#62A83c] hover:bg-[#62A83c] hover:text-white  font-bold mr-4 h-[60px] w-[195px] text-lg">
                 PRODUCTS
               </Button>

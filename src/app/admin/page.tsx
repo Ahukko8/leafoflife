@@ -51,25 +51,14 @@ async function getProductData() {
 
 }
 
-async function getAppointmentData() {
-  const [appointmentCount, pendingAppointmentCount] = await Promise.all([
-    db.appointment.count(), // Count total appointments
-    db.appointment.count({ where: {status: 'PENDING'} }), // Count pending appointments
-  ]);
 
-  return {
-    appointmentCount,
-    pendingAppointmentCount,
-  };
-}
 
 
 export default async function AdminDashboard() {
-  const [salesData, userData, productData, appointmentData] = await Promise.all([
+  const [salesData, userData, productData,] = await Promise.all([
     getSalesData(),
     getUserData(),
     getProductData(),
-    getAppointmentData(),
   ]);
 
   return (
@@ -80,7 +69,7 @@ export default async function AdminDashboard() {
         body={formatCurrency(salesData.amount)}
       />
       <DashboardCard
-        title="Customers"
+        title="Orders"
         subtitle={`${formatCurrency(
           userData.averageValuePerUser
         )} Average Value`}
@@ -92,13 +81,6 @@ export default async function AdminDashboard() {
           productData.inactiveCount
         )} Inactive`}
         body={formatNumber(productData.activeCount)}
-      />
-      <DashboardCard
-        title="Appointments"
-        subtitle={`${formatNumber(
-          appointmentData.pendingAppointmentCount
-        )} pending`}
-        body={formatNumber(appointmentData.appointmentCount)}
       />
     </div>
   );

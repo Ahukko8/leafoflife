@@ -1,5 +1,4 @@
 "use client";
-import { userOrderExists } from "@/src/app/actions/orders";
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
@@ -10,31 +9,30 @@ import {
   CardTitle,
 } from "@/src/components/ui/card";
 import { formatCurrency } from "@/src/lib/formatters";
-import {
-  Elements,
-  LinkAuthenticationElement,
-  PaymentElement,
-  useElements,
-  useStripe,
-} from "@stripe/react-stripe-js";
 import Image from "next/image";
-import { loadStripe } from "@stripe/stripe-js"
-import { FormEvent, useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { useState } from "react";
+import { Textarea } from "@/src/components/ui/textarea";
+import PhoneInput from "react-phone-input-2";
+import { Input } from "@/src/components/ui/input";
+
 
 type CheckoutFormProps = {
   product: {
-    id: string
-    imagePath: string
-    name: string
-    priceInCents: number
-    description: string
-  }
-  clientSecret: string
-}
+    id: string;
+    imagePath: string;
+    name: string;
+    priceInCents: number;
+    description: string;
+  };
+  clientSecret: string;
+};
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string)
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
+);
 
-export function CheckoutForm({ product, clientSecret}: CheckoutFormProps) {
+export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
   return (
     <div className="max-w-5xl w-full mx-auto space-y-8">
       <div className="flex gap-4 items-center">
@@ -47,70 +45,72 @@ export function CheckoutForm({ product, clientSecret}: CheckoutFormProps) {
           />
         </div>
         <div>
-          <div className="text-lg">
-            {formatCurrency(product.priceInCents)}
-          </div>
+          <div className="text-lg">{formatCurrency(product.priceInCents)}</div>
           <h1 className="text-2xl font-bold">{product.name}</h1>
           <div className="line-clamp-3 text-muted-foreground">
             {product.description}
           </div>
         </div>
       </div>
-      <Elements options={{ clientSecret }} stripe={stripePromise}>
-        <Form priceInCents={product.priceInCents} productId={product.id} />
-      </Elements>
+      <Form priceInCents={product.priceInCents} productId={product.id} />
     </div>
-  )
+  );
 }
 
 function Form({
   priceInCents,
   productId,
 }: {
-  priceInCents: number
-  productId: string
+  priceInCents: number;
+  productId: string;
 }) {
-  const stripe = useStripe()
-  const elements = useElements()
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string>()
-  const [email, setEmail] = useState<string>()
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>();
+  // const [email, setEmail] = useState<string>();
+  const [status, setStatus] = useState("");
+  const [formData, setFormData] = useState({
+    customerName: "",
+    productName: "",
+    email: "",
+    message: "",
+    phone: "",
+  });
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault()
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
-    if (stripe == null || elements == null || email == null) return
-
-    setIsLoading(true)
-
-    const orderExists = await userOrderExists(email, productId)
-
-    if (orderExists) {
-      setErrorMessage(
-        "You have already purchased this product. Try downloading it from the My Orders page"
-      )
-      setIsLoading(false)
-      return
-    }
-
-    stripe
-      .confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/stripe/purchase-success`,
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/sendProducts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      })
-      .then(({ error }) => {
-        if (error.type === "card_error" || error.type === "validation_error") {
-          setErrorMessage(error.message)
-        } else {
-          setErrorMessage("An unknown error occurred")
-        }
-      })
-      .finally(() => setIsLoading(false))
-  }
+        body: JSON.stringify(formData),
+      });
 
-
+      if (response.ok) {
+        setStatus("Thank you! We have received your product request. We will contact you for confirmation as soon as possible!");
+        setFormData({
+          customerName: "",
+          productName: "",
+          email: "",
+          message: "",
+          phone: "",
+        });
+      } else {
+        setStatus("Failed to submit the product request.");
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus("An error occurred. Please try again.");
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -124,34 +124,104 @@ function Form({
           )}
         </CardHeader>
         <CardContent>
-          <div className="mb-5">
-            <h1 className="font-bold">Please be informed that currently online payment gateway is unavailable. Please make tranfers via Bank of Maldives or Maldives Islamic Bank.</h1>
-            <h2>Account Name: Abdullah Fizaau</h2>
-            <h2>Account Number: 7777xxxxx007</h2>
-          </div>
-          <h3 className="text-muted-foreground">Please fill below information for verification</h3>
-
-          <PaymentElement />
+          <div className="mb-5"></div>
+          <h3 className="text-muted-foreground">
+            Please fill the below information to send your order to our telegram
+            bot. We will contact you as soon as possible for your order
+            confirmation.
+          </h3>
           <div className="mt-4">
-            <LinkAuthenticationElement
-              onChange={e => setEmail(e.value.email)}
-            />
+            <div className="p-5">
+              <label
+                htmlFor="customerName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Customer Name
+              </label>
+              <Input
+                onChange={handleChange}
+                id="customerName"
+                name="customerName"
+                required
+                className="mt-1"
+                value={formData.customerName}
+              />
+            </div>
+            <div className="p-5">
+              <label
+                htmlFor="productName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Product Name
+              </label>
+              <Input
+                onChange={handleChange}
+                id="productName"
+                name="productName"
+                required
+                className="mt-1"
+                value={formData.productName}
+              />
+            </div>
+            <div className="p-5">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
+              <Input
+                onChange={handleChange}
+                type="email"
+                id="email"
+                name="email"
+                required
+                className="mt-1"
+                value={formData.email}
+              />
+            </div>
+            <div className="p-5">
+              {/* <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Phone Number
+              </label> */}
+              <PhoneInput
+                country="mv"
+                value={formData.phone}
+                onChange={(phone) => setFormData({ ...formData, phone })}
+                placeholder="+960 000 0000"
+                inputProps={{
+                  className: "flex flex-row ml-10 w-[93%] h-9 rounded-md",
+                }}
+              />
+            </div>
+            {/* <div>
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Message your treatment details
+              </label>
+              <Textarea
+                onChange={handleChange}
+                id="message"
+                name="message"
+                rows={4}
+                required
+                className="mt-1"
+                value={formData.message}
+              />
+            </div> */}
+            <Button className="w-full" size="lg" disabled={isLoading}>
+              {isLoading ? "SENDING..." : "SEND ORDER"}
+            </Button>
+            {status && <p className="mt-2 text-sm text-gray-600">{status}</p>}
           </div>
         </CardContent>
-        <CardFooter>
-          <Button
-            className="w-full"
-            size="lg"
-            disabled={stripe == null || elements == null || isLoading}
-          >
-            {isLoading
-              ? "Ordering..."
-              : `Order - ${formatCurrency(priceInCents)}`}
-          </Button>
-        </CardFooter>
+        <CardFooter></CardFooter>
       </Card>
     </form>
-  )
+  );
 }
-
-

@@ -34,7 +34,7 @@ export function ProductCard({ id, name, priceInCents, description, imagePath }: 
       </CardContent>
       <CardFooter className="p-4">
         <Button asChild size="lg" className="w-full bg-[#62A83c] hover:bg-[#3E3C37] font-bold text-lg">
-          <Link href={`/products/${id}/purchase`}>PURCHASE</Link>
+          <Link href={`/products/${id}/purchase`}>ORDER</Link>
         </Button>
       </CardFooter>
     </Card>

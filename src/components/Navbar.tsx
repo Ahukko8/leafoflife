@@ -54,25 +54,30 @@ function NavBar() {
               </Link>
             </li>
             <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
-              <Link href="/services" onClick={() => setNavbar(!navbar)}>
-                SERVICES
+              <Link href="/treatments" onClick={() => setNavbar(!navbar)}>
+                TREATMENTS
               </Link>
             </li>
+            {/* <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
+              <Link href="/consultations" onClick={() => setNavbar(!navbar)}>
+                CONSULTATIONS
+              </Link>
+            </li> */}
             <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
               <Link href="/appointments" onClick={() => setNavbar(!navbar)}>
                 APPOINTMENT
               </Link>
             </li>
             <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c] md:hover:text-gray-100/80 md:hover:bg-transparent">
-              <Link href="#about" onClick={() => setNavbar(!navbar)}>
+              <Link href="/#about" onClick={() => setNavbar(!navbar)}>
                 ABOUT US
               </Link>
             </li>
-            <li className="text-sm t text-gray-100 font-bold py-2 text-center hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
+            {/* <li className="text-sm t text-gray-100 font-bold py-2 text-center hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
               <Link href="#contact" scroll={false} onClick={() => setNavbar(!navbar)}>
                 CONTACT
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

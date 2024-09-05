@@ -60,7 +60,7 @@ function ProductGridSection({
         <h2 className="text-3xl font-bold text-slate-700">{title}</h2>
         <Button className="bg-[#62A83c] hover:bg-[#3E3C37]  font-bold" asChild>
           <Link href="/products" className="space-x-2">
-            <span>View All</span>
+            <span>View More</span>
             <ArrowRight className="size-4" />
           </Link>
         </Button>

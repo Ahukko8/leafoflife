@@ -17,6 +17,8 @@ const PatientForm = () => {
     phone: "",
   });
 
+
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {

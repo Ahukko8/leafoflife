@@ -1,6 +1,7 @@
 "use client";
 
 import { Control } from "react-hook-form";
+import { FormFieldType } from "./forms/formTypes"
 
 import {
   Form,
@@ -12,7 +13,7 @@ import {
   FormMessage,
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
-import { FormFieldType } from "./forms/PatientForm";
+// import { FormFieldType } from "./forms/PatientForm";
 import Image from "next/image";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";

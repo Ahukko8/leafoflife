@@ -3,7 +3,7 @@ interface Treatment {
   title: string;
   description: string;
   items?: string[];
-  // imageUrl: string;
+  imageUrl?: string;
 }
 
 const MOCK_TREATMENTS: Treatment[] = [

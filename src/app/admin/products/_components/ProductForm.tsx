@@ -4,7 +4,7 @@ import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { Textarea } from "@/src/components/ui/textarea";
-import { formatCurrency } from "@/src/lib/formatters";
+import { formatCurrency } from "@/lib/formatters";
 import { useState } from "react";
 import { addProduct, updateProduct } from "../../_actions/products";
 import { useFormState, useFormStatus } from "react-dom";

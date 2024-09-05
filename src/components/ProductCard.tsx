@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { formatCurrency } from "../lib/formatters";
+import { formatCurrency } from "../../lib/formatters";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import Image from "next/image";

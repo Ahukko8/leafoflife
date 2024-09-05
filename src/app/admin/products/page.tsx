@@ -11,7 +11,7 @@ import {
 } from "@/src/components/ui/table";
 import db from "@/src/db/db";
 import { CheckCircle2, MoreVertical, XCircle } from "lucide-react";
-import { formatCurrency, formatNumber } from "@/src/lib/formatters";
+import { formatCurrency, formatNumber } from "@/lib/formatters";
 import {
   DropdownMenu,
   DropdownMenuContent,

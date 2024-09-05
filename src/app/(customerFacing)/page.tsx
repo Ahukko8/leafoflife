@@ -3,7 +3,7 @@ import Hero from "@/src/components/homePage/Hero";
 import { ProductCard, ProductCardSkeleton } from "@/src/components/ProductCard";
 import { Button } from "@/src/components/ui/button";
 import db from "@/src/db/db";
-import { cache } from "@/src/lib/cache";
+import { cache } from "@/lib/cache";
 import { Product } from "@prisma/client";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";

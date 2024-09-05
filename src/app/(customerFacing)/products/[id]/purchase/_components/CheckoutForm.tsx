@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
-import { formatCurrency } from "@/src/lib/formatters";
+import { formatCurrency } from "@/lib/formatters";
 import Image from "next/image";
 import { loadStripe } from "@stripe/stripe-js";
 import { useState } from "react";

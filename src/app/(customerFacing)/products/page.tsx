@@ -3,7 +3,7 @@
 import CategoriesBar from "@/src/components/CategoriesBar";
 import { ProductCard, ProductCardSkeleton } from "@/src/components/ProductCard";
 import db from "@/src/db/db";
-import { cache } from "@/src/lib/cache";
+import { cache } from "@/lib/cache";
 import { Suspense} from "react";
 
 

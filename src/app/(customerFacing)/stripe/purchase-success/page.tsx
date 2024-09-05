@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { formatCurrency } from "@/src/lib/formatters";
+import { formatCurrency } from "@/lib/formatters";
 import Stripe from "stripe";
 import { notFound } from "next/navigation";
 import db from "@/src/db/db";

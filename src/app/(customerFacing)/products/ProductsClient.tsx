@@ -165,7 +165,7 @@ export default function ProductsClient({ initialCategories, initialProducts }: P
             </>
           ) : products.length > 0 ? (
             products.map((product) => (
-              <ProductCard key={product.id} {...product} />
+              <ProductCard key={product.id} {...product} category={product.category}/>
             ))
           ) : (
             <div>No products found.</div>

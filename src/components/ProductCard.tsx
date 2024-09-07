@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import Image from "next/image";
-import { Category } from "@prisma/client";
+
 
 export type ProductCardProps = {
   id: string;
@@ -21,7 +21,6 @@ export type ProductCardProps = {
   isAvailableForPurchase: boolean;
   createdAt: Date;
   updatedAt: Date;
-  category: Category;
 };
 
 export function ProductCard({
@@ -30,7 +29,6 @@ export function ProductCard({
   priceInCents,
   description,
   imagePath,
-  category,
 }: ProductCardProps) {
   return (
     <Card className="flex overflow-hidden flex-col shadow-md rounded-lg bg-white/90 backdrop-blur-lg bg-opacity-80 hover:shadow-xl transition-transform duration-300 transform hover:scale-105">
@@ -52,12 +50,6 @@ export function ProductCard({
         <p className="line-clamp-3 text-justify text-sm text-gray-700">
           {description}
         </p>
-        {category && (
-          <span className="line-clamp-3 text-justify text-sm text-gray-700 font-sans">
-            {" "}
-            Category - {category.name}
-          </span>
-        )}{" "}
       </CardContent>
       <CardFooter className="p-4">
         <Button

@@ -22,8 +22,10 @@ model Product {
   updatedAt              DateTime               @updatedAt
   orders                 Order[]
   downloadVerifications  DownloadVerification[]
-  category               Category[]
+  category               Category               @relation(fields: [categoryId], references: [id])
+  categoryId             String
 }
+
 model Category {
   id       String    @id @default(cuid())
   name     String    @unique

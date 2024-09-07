@@ -15,6 +15,7 @@ const addSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
   priceInCents: z.coerce.number().int().min(1),
+  categoryId: z.string().min(1),
   file: fileSchema.refine((file) => file.size > 0, "Required"),
   image: imageSchema.refine((file) => file.size > 0, "Required"),
 });
@@ -46,7 +47,7 @@ export async function addProduct(prevState: unknown, formData: FormData) {
       priceInCents: data.priceInCents,
       filePath,
       imagePath,
-      
+      category: { connect: { id: data.categoryId } },
     },
   });
 
@@ -103,6 +104,7 @@ export async function updateProduct(
       priceInCents: data.priceInCents,
       filePath,
       imagePath,
+      category: { connect: { id: data.categoryId } },
     },
   });
 
@@ -133,3 +135,4 @@ export async function deleteProduct(id: string) {
   revalidatePath("/");
   revalidatePath("/products");
 }
+

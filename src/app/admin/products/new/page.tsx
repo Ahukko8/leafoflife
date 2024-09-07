@@ -1,12 +1,25 @@
-import { PageHeader } from "../../_components/PageHeader"
-import { ProductForm } from "../_components/ProductForm"
+// import { PageHeader } from "../../_components/PageHeader"
+// import { ProductForm } from "../_components/ProductForm"
 
+// export default function NewProductPage() {
+//   return (
+//     <>
+//       <PageHeader>Add Product</PageHeader>
+//       <ProductForm />
+//     </>
+//   )
+// }
+import { PageHeader } from "../../_components/PageHeader";
+import db from "@/src/db/db";
+import { ProductForm } from "../_components/ProductForm";
 
-export default function NewProductPage() {
+export default async function CreateProductPage() {
+  const categories = await db.category.findMany();
+
   return (
     <>
       <PageHeader>Add Product</PageHeader>
-      <ProductForm />
+      <ProductForm categories={categories} />;
     </>
-  )
+  );
 }

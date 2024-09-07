@@ -51,14 +51,22 @@ async function getProductData() {
 
 }
 
+async function getCategoryData() {
+  const categoryCount = await db.category.count();
+  return {
+    categoryCount,
+  };
+}
+
 
 
 
 export default async function AdminDashboard() {
-  const [salesData, userData, productData,] = await Promise.all([
+  const [salesData, userData, productData, categoryData] = await Promise.all([
     getSalesData(),
     getUserData(),
     getProductData(),
+    getCategoryData(),
   ]);
 
   return (
@@ -82,13 +90,17 @@ export default async function AdminDashboard() {
         )} Inactive`}
         body={formatNumber(productData.activeCount)}
       />
+      <DashboardCard
+        title="Categories"
+        body={formatNumber(categoryData.categoryCount)}
+      />
     </div>
   );
 }
 
 type DashboardCardProps = {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   body: string;
 };
 

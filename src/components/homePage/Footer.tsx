@@ -1,5 +1,5 @@
 import React from "react";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaViber } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaLinkedin, FaViber } from "react-icons/fa";
 import { Button } from "../ui/button";
 import Image from "next/image";
 

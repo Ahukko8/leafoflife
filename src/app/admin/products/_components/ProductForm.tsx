@@ -1,17 +1,30 @@
 "use client";
-
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { Textarea } from "@/src/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { formatCurrency } from "@/lib/formatters";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { addProduct, updateProduct } from "../../_actions/products";
 import { useFormState, useFormStatus } from "react-dom";
-import { Product } from "@prisma/client";
+import { Product, Category } from "@prisma/client";
 import Image from "next/image";
+import db from "@/src/db/db";
 
-export function ProductForm({ product }: { product?: Product | null }) {
+export function ProductForm({
+  product,
+  categories,
+}: {
+  product?: Product | null;
+  categories: Category[];
+}) {
   const [error, action] = useFormState(
     product == null ? addProduct : updateProduct.bind(null, product.id),
     {}
@@ -19,6 +32,8 @@ export function ProductForm({ product }: { product?: Product | null }) {
   const [priceInCents, setPriceInCents] = useState<number | undefined>(
     product?.priceInCents
   );
+
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   return (
     <form action={action} className="space-y-8">
@@ -31,7 +46,7 @@ export function ProductForm({ product }: { product?: Product | null }) {
           required
           defaultValue={product?.name || ""}
         />
-        {error.name && <div className="text-destructive">{error.name}</div>}{" "}
+        {error.name && <div className="text-destructive">{error.name}</div>}
       </div>
       <div className="space-y-2">
         <Label htmlFor="priceInCents">Price</Label>
@@ -62,7 +77,24 @@ export function ProductForm({ product }: { product?: Product | null }) {
           <div className="text-destructive">{error.description}</div>
         )}
       </div>
-
+      <div className="space-y-2">
+        <Label htmlFor="category">Category</Label>
+        <Select name="categoryId" defaultValue={product?.categoryId || ""}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((category) => (
+              <SelectItem key={category.id} value={category.id}>
+                {category.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {error.categoryId && (
+          <div className="text-destructive">{error.categoryId}</div>
+        )}
+      </div>
       <div className="space-y-2">
         <Label htmlFor="file">File</Label>
         <Input type="file" id="file" name="file" required={product === null} />

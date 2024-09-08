@@ -1,3 +1,57 @@
+// // "use client";
+
+// // import { useState } from "react";
+// // import { Input } from "@/src/components/ui/input";
+// // import { Label } from "@/src/components/ui/label";
+// // import { Button } from "@/src/components/ui/button";
+// // import { useRouter } from "next/navigation";
+
+// // export default function CategoriesPage() {
+// //   const [name, setName] = useState<string>("");
+// //   const [error, setError] = useState<string | null>(null);
+// //   const router = useRouter();
+
+// //   const addCategory = async () => {
+// //     try {
+// //       const res = await fetch("/api/categories", {
+// //         method: "POST",
+// //         headers: {
+// //           "Content-Type": "application/json",
+// //         },
+// //         body: JSON.stringify({ name }),
+// //       });
+
+// //       if (res.ok) {
+// //         setName(""); // Reset the form
+// //         router.refresh(); // Refresh the page to show updated categories
+// //       } else {
+// //         const errorData = await res.json();
+// //         setError(errorData.message || "Error adding category");
+// //       }
+// //     } catch (err) {
+// //       setError("Failed to add category.");
+// //     }
+// //   };
+
+// //   return (
+// //     <div className="space-y-6">
+// //       <h1 className="text-2xl font-semibold">Add Category</h1>
+// //       <div className="space-y-2">
+// //         <Label htmlFor="category-name">Category Name</Label>
+// //         <Input
+// //           type="text"
+// //           id="category-name"
+// //           value={name}
+// //           onChange={(e) => setName(e.target.value)}
+// //           required
+// //         />
+// //         {error && <div className="text-destructive">{error}</div>}
+// //       </div>
+// //       <Button onClick={addCategory}>Add Category</Button>
+// //     </div>
+// //   );
+// // }
+
 // "use client";
 
 // import { useState } from "react";
@@ -9,9 +63,13 @@
 // export default function CategoriesPage() {
 //   const [name, setName] = useState<string>("");
 //   const [error, setError] = useState<string | null>(null);
+//   const [successMessage, setSuccessMessage] = useState<string | null>(null); // For success message
 //   const router = useRouter();
 
 //   const addCategory = async () => {
+//     setError(null); // Clear previous errors
+//     setSuccessMessage(null); // Clear previous success messages
+
 //     try {
 //       const res = await fetch("/api/categories", {
 //         method: "POST",
@@ -23,10 +81,15 @@
 
 //       if (res.ok) {
 //         setName(""); // Reset the form
+//         setSuccessMessage("Category added successfully!"); // Set success message
 //         router.refresh(); // Refresh the page to show updated categories
 //       } else {
 //         const errorData = await res.json();
-//         setError(errorData.message || "Error adding category");
+//         if (errorData.message === "Category already exists") {
+//           setError("Category already exists"); // Specific error for duplicates
+//         } else {
+//           setError(errorData.message || "Error adding category");
+//         }
 //       }
 //     } catch (err) {
 //       setError("Failed to add category.");
@@ -46,6 +109,7 @@
 //           required
 //         />
 //         {error && <div className="text-destructive">{error}</div>}
+//         {successMessage && <div className="text-success text-primary-leaf">{successMessage}</div>} {/* Success message */}
 //       </div>
 //       <Button onClick={addCategory}>Add Category</Button>
 //     </div>
@@ -54,51 +118,94 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { Button } from "@/src/components/ui/button";
 import { useRouter } from "next/navigation";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table";
+import { Pencil, Trash2 } from "lucide-react";
+
+interface Category {
+  id: string;
+  name: string;
+}
 
 export default function CategoriesPage() {
   const [name, setName] = useState<string>("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null); // For success message
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  const addCategory = async () => {
-    setError(null); // Clear previous errors
-    setSuccessMessage(null); // Clear previous success messages
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("/api/categories");
+      if (res.ok) {
+        const data = await res.json();
+        setCategories(data);
+      }
+    } catch (err) {
+      setError("Failed to fetch categories.");
+    }
+  };
+
+  const addOrUpdateCategory = async () => {
+    setError(null);
+    setSuccessMessage(null);
 
     try {
-      const res = await fetch("/api/categories", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const url = editingId ? `/api/categories/${editingId}` : "/api/categories";
+      const method = editingId ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name }),
       });
 
       if (res.ok) {
-        setName(""); // Reset the form
-        setSuccessMessage("Category added successfully!"); // Set success message
-        router.refresh(); // Refresh the page to show updated categories
+        setName("");
+        setEditingId(null);
+        setSuccessMessage(editingId ? "Category updated successfully!" : "Category added successfully!");
+        fetchCategories();
       } else {
         const errorData = await res.json();
-        if (errorData.message === "Category already exists") {
-          setError("Category already exists"); // Specific error for duplicates
-        } else {
-          setError(errorData.message || "Error adding category");
-        }
+        setError(errorData.error || "Error processing category");
       }
     } catch (err) {
-      setError("Failed to add category.");
+      setError("Failed to process category.");
     }
+  };
+
+  const deleteCategory = async (id: string) => {
+    try {
+      const res = await fetch(`/api/categories/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setSuccessMessage("Category deleted successfully!");
+        fetchCategories();
+      } else {
+        const errorData = await res.json();
+        setError(errorData.error || "Failed to delete category.");
+      }
+    } catch (err) {
+      setError("Failed to delete category.");
+    }
+  };
+
+  const startEditing = (category: Category) => {
+    setEditingId(category.id);
+    setName(category.name);
   };
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Add Category</h1>
+      <h1 className="text-2xl font-semibold">Manage Categories</h1>
       <div className="space-y-2">
         <Label htmlFor="category-name">Category Name</Label>
         <Input
@@ -109,9 +216,40 @@ export default function CategoriesPage() {
           required
         />
         {error && <div className="text-destructive">{error}</div>}
-        {successMessage && <div className="text-success text-primary-leaf">{successMessage}</div>} {/* Success message */}
+        {successMessage && <div className="text-primary-leaf">{successMessage}</div>}
       </div>
-      <Button onClick={addCategory}>Add Category</Button>
+      <Button onClick={addOrUpdateCategory}>
+        {editingId ? "Update Category" : "Add Category"}
+      </Button>
+      {editingId && (
+        <Button variant="outline" onClick={() => { setEditingId(null); setName(""); }}>
+          Cancel Edit
+        </Button>
+      )}
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {categories.map((category) => (
+            <TableRow key={category.id}>
+              <TableCell>{category.name}</TableCell>
+              <TableCell>
+                <Button variant="ghost" onClick={() => startEditing(category)}>
+                  <Pencil className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" onClick={() => deleteCategory(category.id)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

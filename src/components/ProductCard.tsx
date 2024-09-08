@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 import { formatCurrency } from "../../lib/formatters";
 import { Button } from "./ui/button";
@@ -10,7 +11,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import Image from "next/image";
-
+import { useState } from "react";
 
 export type ProductCardProps = {
   id: string;
@@ -64,8 +65,6 @@ export type ProductCardProps = {
 //   );
 // }
 
-
-
 export function ProductCard({
   id,
   name,
@@ -73,16 +72,35 @@ export function ProductCard({
   description,
   imagePath,
 }: ProductCardProps) {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <Card className="flex overflow-hidden flex-col shadow-md rounded-lg bg-white/90 backdrop-blur-lg bg-opacity-80 hover:shadow-xl transition-transform duration-300 transform hover:scale-105">
-      <div className="relative w-full h-40 sm:h-48 md:h-56">
+      {/* <div className="relative w-full h-40 sm:h-48 md:h-56">
         <Image
           src={imagePath.startsWith('/') ? imagePath : `/${imagePath}`}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover rounded-t-lg"
+          onError={() => setImageError(true)}
         />
+      </div> */}
+      <div className="relative w-full h-40 sm:h-48 md:h-56">
+        {!imageError ? (
+          <Image
+            src={imagePath}
+            alt={name}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover rounded-t-lg"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
+            Image not available
+          </div>
+        )}
       </div>
       <CardHeader className="p-4 text-center">
         <CardTitle className="text-lg font-bold">{name}</CardTitle>

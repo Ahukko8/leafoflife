@@ -1,4 +1,3 @@
-import { Nav, NavLink } from "@/src/components/Nav"
 import Navbar from "@/src/components/Navbar"
 export const dynamic = "force-dynamic"
 

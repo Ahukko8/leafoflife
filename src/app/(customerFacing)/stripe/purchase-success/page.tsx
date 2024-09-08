@@ -3,8 +3,6 @@ import { formatCurrency } from "@/lib/formatters";
 import Stripe from "stripe";
 import { notFound } from "next/navigation";
 import db from "@/src/db/db";
-import Link from "next/link"
-import { Button } from "@/src/components/ui/button";
 import { Card } from "@/src/components/ui/card";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
@@ -50,36 +48,12 @@ export default async function SuccessPage({
             {product.description}
           </div>
         </div>
-        <Button className="bg-[#62A83c] hover:bg-[#3E3C37]" size="lg" asChild>
-          {isSuccess ? (
-              <a
-                href={`/products/download/${await createDownloadVerification(
-                  product.id
-                )}`}
-              >
-                Download
-              </a>
-            ) : (
-              <Link href={`/products/${product.id}/purchase`}>Try Again</Link>
-            )}
-          </Button>
       </div>
       </Card>
     </div>
   )
 }
 
-
-async function createDownloadVerification(productId: string) {
-  return (
-    await db.downloadVerification.create({
-      data: {
-        productId,
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
-      },
-    })
-  ).id
-}
 
 
  

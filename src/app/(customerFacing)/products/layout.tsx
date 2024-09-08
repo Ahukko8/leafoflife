@@ -1,4 +1,3 @@
-import Navbar from "@/src/components/Navbar"
 export const dynamic = "force-dynamic"
 
 export default function ProductLayout({

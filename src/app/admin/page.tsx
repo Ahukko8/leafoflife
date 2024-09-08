@@ -21,22 +21,6 @@ async function getSalesData() {
   };
 }
 
-async function getUserData() {
-  const [userCount, orderData] = await Promise.all([
-    db.user.count(),
-    db.order.aggregate({
-      _sum: { pricePaidInCents: true },
-    }),
-  ]);
-
-  return {
-    userCount,
-    averageValuePerUser:
-      userCount === 0
-        ? 0
-        : (orderData._sum.pricePaidInCents || 0) / userCount / 100,
-  };
-}
 
 async function getProductData() {
   const [activeCount, inactiveCount] = await Promise.all([
@@ -62,9 +46,9 @@ async function getCategoryData() {
 
 
 export default async function AdminDashboard() {
-  const [salesData, userData, productData, categoryData] = await Promise.all([
+  const [salesData, productData, categoryData] = await Promise.all([
     getSalesData(),
-    getUserData(),
+    
     getProductData(),
     getCategoryData(),
   ]);
@@ -75,13 +59,6 @@ export default async function AdminDashboard() {
         title="Sales"
         subtitle={`${formatNumber(salesData.numberOfSales)} Orders`}
         body={formatCurrency(salesData.amount)}
-      />
-      <DashboardCard
-        title="Orders"
-        subtitle={`${formatCurrency(
-          userData.averageValuePerUser
-        )} Average Value`}
-        body={formatNumber(userData.userCount)}
       />
       <DashboardCard
         title="Active Products"

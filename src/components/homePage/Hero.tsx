@@ -3,7 +3,7 @@
 import { Button } from "@/src/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+
 
 const Hero = () => {
   return (

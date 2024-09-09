@@ -24,6 +24,7 @@ export default function RootLayout({
           name="keywords"
           content="herbal medicine, traditional healing, Leaf of Life Clinic, Ha. Kelaa"
         />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <body className={cn("bg-background min-h-screen font-sans antialiased", inter.variable)}>
         {children}

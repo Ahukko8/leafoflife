@@ -23,4 +23,6 @@ nextConfig.images.remotePatterns = [
     },
   ];
 
+
+
 export default nextConfig;

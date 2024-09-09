@@ -6,40 +6,78 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 
 function NavBar() {
+  const [navbar, setNavbar] = useState(false); 
   return (
-    <nav className="bg-[#62A83c] top-0 left-0 right-0 z-10">
-      <div className="justify-between px-4 mx-auto items-center flex">
-       
+    <nav className="bg-[#62A83c] top-0 left-0 right-0 z-10 h-full">
+      <div className="justify-between px-4 mx-auto md:items-center md:flex md:px-8">
+        <div className="flex items-center justify-between py-3 md:py-5 md:block">
+          {/* LOGO
+          <Link href="/">
+          <Image src="/logo.png" width={50} height={50} alt="logo" />
+          </Link> */}
+          {/* HAMBURGER BUTTON FOR MOBILE */}
+          <div className="md:hidden">
+            <Button
+              className="p-2 bg-transparent hover:bg-white/35"
+              onClick={() => setNavbar(!navbar)}
+            >
+              {navbar ? (
+                <Image src="/close.svg" width={30} height={30} alt="logo" />
+              ) : (
+                <Image
+                  src="/hamburger-menu.svg"
+                  width={30}
+                  height={30}
+                  alt="logo"
+                  className="focus:border-none active:border-none"
+                />
+              )}
+            </Button>
+          </div>
+        </div>
+
+        {/* NAVIGATION ITEMS */}
         <div
-          className="flex-1 justify-self-center mb-3 mt-3 block  p-0"
+          className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
+            navbar ? "p-12 md:p-0 block" : "hidden"
+          }`}
         >
-          <ul className="h-10 items-center justify-center flex  space-x-6">
-          <li className="text-sm text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  hover:text-gray-100/80 hover:bg-transparent">
-              <Link href="/">
+          <ul className="h-screen md:h-auto items-center justify-center md:flex space-y-6 md:space-y-0 md:space-x-6">
+          <li className="text-sm text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
+              <Link href="/" onClick={() => setNavbar(!navbar)}>
                 HOME
               </Link>
             </li>
-            <li className="text-sm text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c] hover:text-gray-100/80 :hover:bg-transparent">
-              <Link href="/products">
+            <li className="text-sm text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
+              <Link href="/products" onClick={() => setNavbar(!navbar)}>
                 PRODUCTS
               </Link>
             </li>
-            <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c] hover:text-gray-100/80 hover:bg-transparent">
-              <Link href="/treatments">
-                SERVICES
+            <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
+              <Link href="/treatments" onClick={() => setNavbar(!navbar)}>
+                TREATMENTS
               </Link>
             </li>
-
+            {/* <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
+              <Link href="/consultations" onClick={() => setNavbar(!navbar)}>
+                CONSULTATIONS
+              </Link>
+            </li> */}
             <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
-              <Link href="/appointments">
+              <Link href="/appointments" onClick={() => setNavbar(!navbar)}>
                 APPOINTMENT
               </Link>
             </li>
             <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c] md:hover:text-gray-100/80 md:hover:bg-transparent">
-              <Link href="/#about">
-                ABOUT
+              <Link href="/#about" onClick={() => setNavbar(!navbar)}>
+                ABOUT US
               </Link>
             </li>
+            {/* <li className="text-sm t text-gray-100 font-bold py-2 text-center hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
+              <Link href="#contact" scroll={false} onClick={() => setNavbar(!navbar)}>
+                CONTACT
+              </Link>
+            </li> */}
           </ul>
         </div>
       </div>

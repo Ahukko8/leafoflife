@@ -57,7 +57,7 @@ export default function TreatmentsPage() {
 
   return (
     <div className="container mx-auto py-8 px-4 bg-[url(/img/bg.jpg)]">
-      <h1 className="text-4xl font-bold mb-8 text-left">TREATMENTS</h1>
+      <h1 className="text-4xl font-bold mb-8 text-left text-[#3E3C37] font-sans">TREATMENTS</h1>
       <div className="relative mb-8">
         <Input
           type="text"
@@ -73,18 +73,25 @@ export default function TreatmentsPage() {
           <Card
             key={treatment.id}
             className="overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            style={{
+              backgroundImage: ` url(${treatment.imageUrl})`,
+              backgroundSize: "cover", // Adjust if needed, can use 'contain' or 'auto'
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
           >
+          
             <CardHeader>
-              <CardTitle>
+              <CardTitle className="font-extrabold">
                 {highlightText(treatment.title, searchTerm)}
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-zinc-900 leading-relaxed text-justify font-bold">
                 {highlightText(treatment.description, searchTerm)}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {treatment.items && treatment.items.length > 0 && (
-                <ul className="mt-2 list-disc pl-5 space-y-2 text-gray-500">
+                <ul className="mt-2 list-disc pl-5 space-y-2 text-slate-500 leading-relaxed text-justify">
                   {treatment.items.map((item, index) => (
                     <li key={index}>{highlightText(item, searchTerm)}</li>
                   ))}
@@ -109,7 +116,7 @@ export default function TreatmentsPage() {
       )}
 
       <div className="container mt-10 mx-auto py-8 px-4">
-        <h1 className="text-4xl font-bold mb-8 text-left">DISEASES</h1>
+        <h1 className="text-4xl font-bold mb-8 text-left text-[#3E3C37]">DISEASES</h1>
         <div className="relative mb-8">
           <p>
             Below are some of the diseases we diagnose and treat using the above

@@ -1,36 +1,31 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { Menu, X } from "lucide-react";
 
 function NavBar() {
-  const [navbar, setNavbar] = useState(false); 
+  const [navbar, setNavbar] = useState(false);
   return (
-    <nav className="bg-[#62A83c] top-0 left-0 right-0 z-10 h-full">
+    <nav className="bg-[#62A83c] top-0 left-0 right-0 z-10">
       <div className="justify-between px-4 mx-auto md:items-center md:flex md:px-8">
         <div className="flex items-center justify-between py-3 md:py-5 md:block">
-          {/* LOGO
-          <Link href="/">
-          <Image src="/logo.png" width={50} height={50} alt="logo" />
+          {/* LOGO */}
+          {/* <Link href="/">
+            <Image src="/logo.png" width={50} height={50} alt="logo" />
           </Link> */}
+          
           {/* HAMBURGER BUTTON FOR MOBILE */}
           <div className="md:hidden">
             <Button
-              className="p-2 bg-transparent hover:bg-white/35"
+              className="p-2 text-white bg-transparent hover:bg-white/20"
               onClick={() => setNavbar(!navbar)}
             >
               {navbar ? (
-                <Image src="/close.svg" width={30} height={30} alt="logo" />
+                <X size={24} />
               ) : (
-                <Image
-                  src="/hamburger-menu.svg"
-                  width={30}
-                  height={30}
-                  alt="logo"
-                  className="focus:border-none active:border-none"
-                />
+                <Menu size={24} />
               )}
             </Button>
           </div>
@@ -39,45 +34,23 @@ function NavBar() {
         {/* NAVIGATION ITEMS */}
         <div
           className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
-            navbar ? "p-12 md:p-0 block" : "hidden"
+            navbar ? "block" : "hidden"
           }`}
         >
-          <ul className="h-screen md:h-auto items-center justify-center md:flex space-y-6 md:space-y-0 md:space-x-6">
-          <li className="text-sm text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
-              <Link href="/" onClick={() => setNavbar(!navbar)}>
-                HOME
-              </Link>
-            </li>
-            <li className="text-sm text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
-              <Link href="/products" onClick={() => setNavbar(!navbar)}>
-                PRODUCTS
-              </Link>
-            </li>
-            <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
-              <Link href="/treatments" onClick={() => setNavbar(!navbar)}>
-                TREATMENTS
-              </Link>
-            </li>
-            {/* <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
-              <Link href="/consultations" onClick={() => setNavbar(!navbar)}>
-                CONSULTATIONS
-              </Link>
-            </li> */}
-            <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
-              <Link href="/appointments" onClick={() => setNavbar(!navbar)}>
-                APPOINTMENT
-              </Link>
-            </li>
-            <li className="text-sm  text-gray-100 font-bold py-2 text-center  hover:bg-[#62A83c] md:hover:text-gray-100/80 md:hover:bg-transparent">
-              <Link href="/#about" onClick={() => setNavbar(!navbar)}>
-                ABOUT US
-              </Link>
-            </li>
-            {/* <li className="text-sm t text-gray-100 font-bold py-2 text-center hover:bg-[#62A83c]  md:hover:text-gray-100/80 md:hover:bg-transparent">
-              <Link href="#contact" scroll={false} onClick={() => setNavbar(!navbar)}>
-                CONTACT
-              </Link>
-            </li> */}
+          <ul className="h-screen md:h-auto items-center justify-center md:flex ">
+            {[
+              { href: "/", label: "HOME" },
+              { href: "/products", label: "PRODUCTS" },
+              { href: "/treatments", label: "TREATMENTS" },
+              { href: "/appointments", label: "APPOINTMENT" },
+              { href: "/#about", label: "ABOUT US" },
+            ].map((item) => (
+              <li key={item.href} className="text-sm text-white font-bold py-2 px-3 text-center hover:bg-white/20 md:hover:bg-transparent md:hover:text-white/80 transition-colors duration-300">
+                <Link href={item.href} onClick={() => setNavbar(!navbar)}>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

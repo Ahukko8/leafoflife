@@ -18,7 +18,7 @@ export type ProductCardProps = {
   name: string;
   priceInCents: number;
   description: string;
-  imagePath?: string | undefined;
+  imagePath?: string | null;
   isAvailableForPurchase: boolean;
   createdAt: Date;
   updatedAt: Date;

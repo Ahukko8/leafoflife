@@ -1,142 +1,3 @@
-// "use server";
-
-// import db from "@/src/db/db";
-// import { z } from "zod";
-// import fs from "fs/promises";
-// import { notFound, redirect } from "next/navigation";
-// import { revalidatePath } from "next/cache";
-
-// const fileSchema = z.instanceof(File, { message: "Required" });
-// const imageSchema = fileSchema.refine(
-//   (file) => file.size === 0 || file.type.startsWith("image/")
-// );
-
-// const addSchema = z.object({
-//   name: z.string().min(1),
-//   description: z.string().min(1),
-//   priceInCents: z.coerce.number().int().min(1),
-//   categoryId: z.string().min(1),
-//   file: fileSchema.refine((file) => file.size > 0, "Required"),
-//   image: imageSchema.refine((file) => file.size > 0, "Required"),
-// });
-
-// export async function addProduct(prevState: unknown, formData: FormData) {
-//   const result = addSchema.safeParse(Object.fromEntries(formData.entries()));
-//   if (result.success === false) {
-//     return result.error.formErrors.fieldErrors;
-//   }
-
-//   const data = result.data;
-
-//   await fs.mkdir("products", { recursive: true });
-//   const filePath = `products/${crypto.randomUUID()}-${data.file.name}`;
-//   await fs.writeFile(filePath, Buffer.from(await data.file.arrayBuffer()));
-
-//   await fs.mkdir("public/products", { recursive: true });
-//   const imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
-//   await fs.writeFile(
-//     `public${imagePath}`,
-//     Buffer.from(await data.image.arrayBuffer())
-//   );
-
-//   await db.product.create({
-//     data: {
-//       isAvailableForPurchase: false,
-//       name: data.name,
-//       description: data.description,
-//       priceInCents: data.priceInCents,
-//       filePath,
-//       imagePath,
-//       category: { connect: { id: data.categoryId } },
-//     },
-//   });
-
-//   revalidatePath("/");
-//   revalidatePath("/products");
-
-//   redirect("/admin/products");
-// }
-
-// const editSchema = addSchema.extend({
-//   file: fileSchema.optional(),
-//   image: imageSchema.optional(),
-// });
-
-// export async function updateProduct(
-//   id: string,
-//   prevState: unknown,
-//   formData: FormData
-// ) {
-//   const result = editSchema.safeParse(Object.fromEntries(formData.entries()));
-//   if (result.success === false) {
-//     return result.error.formErrors.fieldErrors;
-//   }
-
-//   const data = result.data;
-//   const product = await db.product.findUnique({ where: { id } });
-
-//   if (product == null) return notFound();
-
-//   let filePath = product.filePath;
-
-//   if (data.file != null && data.file.size > 0) {
-//     await fs.unlink(product.filePath);
-//     filePath = `products/${crypto.randomUUID()}-${data.file.name}`;
-//     await fs.writeFile(filePath, Buffer.from(await data.file.arrayBuffer()));
-//   }
-
-//   let imagePath = product.imagePath;
-
-//   if (data.image != null && data.image.size > 0) {
-//     await fs.unlink(`public${product.imagePath}`);
-//     const imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
-//     await fs.writeFile(
-//       `public${imagePath}`,
-//       Buffer.from(await data.image.arrayBuffer())
-//     );
-//   }
-
-//   await db.product.update({
-//     where: { id },
-//     data: {
-//       name: data.name,
-//       description: data.description,
-//       priceInCents: data.priceInCents,
-//       filePath,
-//       imagePath,
-//       category: { connect: { id: data.categoryId } },
-//     },
-//   });
-
-//   revalidatePath("/");
-//   revalidatePath("/products");
-
-//   redirect("/admin/products");
-// }
-
-// export async function toggleProductAvailability(
-//   id: string,
-//   isAvailableForPurchase: boolean
-// ) {
-//   await db.product.update({ where: { id }, data: { isAvailableForPurchase } });
-
-//   revalidatePath("/");
-//   revalidatePath("/products");
-// }
-
-// export async function deleteProduct(id: string) {
-//   const product = await db.product.delete({ where: { id } });
-
-//   if (product == null) return notFound();
-
-//   await fs.unlink(product.filePath);
-//   await fs.unlink(`public${product.imagePath}`);
-
-//   revalidatePath("/");
-//   revalidatePath("/products");
-// }
-
-
 "use server";
 
 import db from "@/src/db/db";
@@ -145,25 +6,33 @@ import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { uploadToSpaces } from "@/lib/uploadToSpaces";
 
-
-
-
+// Define the shape of your error object
+export interface FormErrors {
+  name?: string[];
+  description?: string[];
+  priceInCents?: string[];
+  categoryId?: string[];
+  file?: string[];
+  image?: string[];
+  [key: string]: string[] | undefined;
+}
 
 const fileSchema = z.instanceof(File, { message: "Required" });
 const imageSchema = fileSchema.refine(
-  (file) => file.size === 0 || file.type.startsWith("image/")
+  (file) => file.size === 0 || file.type.startsWith("image/"),
+  { message: "Must be an image file" }
 );
 
 const addSchema = z.object({
-  name: z.string().min(1),
-  description: z.string().min(1),
-  priceInCents: z.coerce.number().int().min(1),
-  categoryId: z.string().min(1),
-  file: fileSchema.refine((file) => file.size > 0, "Required"),
-  image: imageSchema.refine((file) => file.size > 0, "Required"),
+  name: z.string().min(1, "Name is required"),
+  description: z.string().min(1, "Description is required"),
+  priceInCents: z.coerce.number().int().min(1, "Price must be at least 1 cent"),
+  categoryId: z.string().min(1, "Category is required"),
+  file: fileSchema.refine((file) => file.size > 0, "File is required"),
+  image: imageSchema.refine((file) => file.size > 0, "Image is required"),
 });
 
-export async function addProduct(prevState: unknown, formData: FormData) {
+export async function addProduct(prevState: unknown, formData: FormData): Promise<FormErrors | { success: true }> {
   const result = addSchema.safeParse(Object.fromEntries(formData.entries()));
   if (result.success === false) {
     return result.error.formErrors.fieldErrors;
@@ -171,35 +40,40 @@ export async function addProduct(prevState: unknown, formData: FormData) {
 
   const data = result.data;
 
-  const fileKey = `products/${crypto.randomUUID()}-${data.file.name}`;
-  const filePath = await uploadToSpaces(data.file, fileKey);
+  try {
+    const fileKey = `products/${crypto.randomUUID()}-${data.file.name}`;
+    const filePath = await uploadToSpaces(data.file, fileKey);
 
-  const imageKey = `products/${crypto.randomUUID()}-${data.image.name}`;
-  const imagePath = await uploadToSpaces(data.image, imageKey);
+    const imageKey = `products/${crypto.randomUUID()}-${data.image.name}`;
+    const imagePath = await uploadToSpaces(data.image, imageKey);
 
-  if (!filePath || !imagePath) {
-    console.error("Failed to upload file or image");
-    return { error: "Failed to upload file or image" };
+    if (!filePath || !imagePath) {
+      return { error: ["Failed to upload file or image"] } as FormErrors;
+    }
+
+    await db.product.create({
+      data: {
+        isAvailableForPurchase: false,
+        name: data.name,
+        description: data.description,
+        priceInCents: data.priceInCents,
+        filePath,
+        imagePath,
+        category: { connect: { id: data.categoryId } },
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath("/products");
+
+    
+
+    return { success: true};
+  } catch (error) {
+    console.error("Error adding product:", error);
+    return { error: ["An unexpected error occurred while adding the product"] } as FormErrors;
   }
-
-  await db.product.create({
-    data: {
-      isAvailableForPurchase: false,
-      name: data.name,
-      description: data.description,
-      priceInCents: data.priceInCents,
-      filePath,
-      imagePath,
-      category: { connect: { id: data.categoryId } },
-    },
-  });
-
-  revalidatePath("/");
-  revalidatePath("/products");
-
-  redirect("/admin/products");
 }
-
 const editSchema = addSchema.extend({
   file: fileSchema.optional(),
   image: imageSchema.optional(),
@@ -209,7 +83,7 @@ export async function updateProduct(
   id: string,
   prevState: unknown,
   formData: FormData
-) {
+): Promise<FormErrors | { error: string }> {
   const result = editSchema.safeParse(Object.fromEntries(formData.entries()));
   if (result.success === false) {
     return result.error.formErrors.fieldErrors;
@@ -218,59 +92,73 @@ export async function updateProduct(
   const data = result.data;
   const product = await db.product.findUnique({ where: { id } });
 
-  if (product == null) return notFound();
+  if (product == null) return { error: "Product not found" };
 
-  let filePath = product.filePath;
-  let imagePath = product.imagePath;
+  try {
+    let filePath = product.filePath;
+    let imagePath = product.imagePath;
 
-  if (data.file && data.file.size > 0) {
-    const fileKey = `products/${crypto.randomUUID()}-${data.file.name}`;
-    const newFilePath = await uploadToSpaces(data.file, fileKey);
-    if (newFilePath) filePath = newFilePath;
+    if (data.file && data.file.size > 0) {
+      const fileKey = `products/${crypto.randomUUID()}-${data.file.name}`;
+      const newFilePath = await uploadToSpaces(data.file, fileKey);
+      if (newFilePath) filePath = newFilePath;
+    }
+
+    if (data.image && data.image.size > 0) {
+      const imageKey = `products/${crypto.randomUUID()}-${data.image.name}`;
+      const newImagePath = await uploadToSpaces(data.image, imageKey);
+      if (newImagePath) imagePath = newImagePath;
+    }
+
+    await db.product.update({
+      where: { id },
+      data: {
+        name: data.name,
+        description: data.description,
+        priceInCents: data.priceInCents,
+        filePath,
+        imagePath,
+        category: { connect: { id: data.categoryId } },
+      },
+    });
+
+    revalidatePath("/");
+    revalidatePath("/products");
+
+    redirect("/admin/products");
+  } catch (error) {
+    console.error("Error updating product:", error);
+    return { error: "An unexpected error occurred while updating the product" };
   }
-
-  if (data.image && data.image.size > 0) {
-    const imageKey = `products/${crypto.randomUUID()}-${data.image.name}`;
-    const newImagePath = await uploadToSpaces(data.image, imageKey);
-    if (newImagePath) imagePath = newImagePath;
-  }
-
-  await db.product.update({
-    where: { id },
-    data: {
-      name: data.name,
-      description: data.description,
-      priceInCents: data.priceInCents,
-      filePath,
-      imagePath,
-      category: { connect: { id: data.categoryId } },
-    },
-  });
-
-  revalidatePath("/");
-  revalidatePath("/products");
-
-  redirect("/admin/products");
 }
 
 export async function toggleProductAvailability(
   id: string,
   isAvailableForPurchase: boolean
 ) {
-  await db.product.update({ where: { id }, data: { isAvailableForPurchase } });
-
-  revalidatePath("/");
-  revalidatePath("/products");
+  try {
+    await db.product.update({ where: { id }, data: { isAvailableForPurchase } });
+    revalidatePath("/");
+    revalidatePath("/products");
+  } catch (error) {
+    console.error("Error toggling product availability:", error);
+    return { error: "An unexpected error occurred while updating product availability" };
+  }
 }
 
 export async function deleteProduct(id: string) {
-  const product = await db.product.delete({ where: { id } });
+  try {
+    const product = await db.product.delete({ where: { id } });
 
-  if (product == null) return notFound();
+    if (product == null) return { error: "Product not found" };
 
-  // Note: This doesn't delete the files from DigitalOcean Spaces.
-  // You might want to implement this functionality if needed.
+    // Note: This doesn't delete the files from DigitalOcean Spaces.
+    // You might want to implement this functionality if needed.
 
-  revalidatePath("/");
-  revalidatePath("/products");
+    revalidatePath("/");
+    revalidatePath("/products");
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return { error: "An unexpected error occurred while deleting the product" };
+  }
 }

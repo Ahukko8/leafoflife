@@ -12,10 +12,12 @@ import {
 } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/formatters";
 import { useState } from "react";
-import { addProduct, updateProduct } from "../../_actions/products";
+import { addProduct, updateProduct, FormErrors } from "../../_actions/products";
 import { useFormState, useFormStatus } from "react-dom";
 import { Product, Category } from "@prisma/client";
 import Image from "next/image";
+
+type FormState = FormErrors | { error: string } | {};
 
 export function ProductForm({
   product,
@@ -24,13 +26,21 @@ export function ProductForm({
   product?: Product | null;
   categories: Category[];
 }) {
-  const [error, action] = useFormState(
-    product == null ? addProduct : updateProduct.bind(null, product.id),
+  const [error, action] = useFormState<FormState, FormData>(
+    product == null
+      ? addProduct
+      : (prevState: FormState, formData: FormData) =>
+          updateProduct(product.id, prevState, formData),
     {}
   );
-  const [priceInCents, setPriceInCents] = useState<number | undefined>(
-    product?.priceInCents
+
+  const [priceInCents, setPriceInCents] = useState<string>(
+    product?.priceInCents?.toString() || ""
   );
+
+  const isFormErrors = (err: FormState): err is FormErrors => {
+    return typeof err === "object" && err !== null && !("error" in err);
+  };
 
   return (
     <form action={action} className="space-y-8">
@@ -43,7 +53,9 @@ export function ProductForm({
           required
           defaultValue={product?.name || ""}
         />
-        {/* {error?.name && <div className="text-destructive">{error.name}</div>} */}
+        {isFormErrors(error) && error.name && (
+          <p className="text-destructive">{error.name[0]}</p>
+        )}{" "}
       </div>
       <div className="space-y-2">
         <Label htmlFor="priceInCents">Price</Label>
@@ -53,14 +65,14 @@ export function ProductForm({
           name="priceInCents"
           required
           value={priceInCents}
-          onChange={(e) => setPriceInCents(Number(e.target.value) || undefined)}
+          onChange={(e) => setPriceInCents(e.target.value)}
         />
         <div className="text-muted-foreground">
-          {formatCurrency(priceInCents || 0)}
+        {formatCurrency(Number(priceInCents) || 0)}
         </div>
-        {/* {error?.priceInCents && (
-          <div className="text-destructive">{error.priceInCents}</div>
-        )} */}
+        {isFormErrors(error) && error.priceInCents && (
+          <p className="text-destructive">{error.priceInCents[0]}</p>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="description">Description</Label>
@@ -70,9 +82,9 @@ export function ProductForm({
           required
           defaultValue={product?.description || ""}
         />
-        {/* {error?.description && (
-          <div className="text-destructive">{error.description}</div>
-        )} */}
+        {!isFormErrors(error) && "error" in error && (
+          <p className="text-destructive">{error.error}</p>
+        )}{" "}
       </div>
       <div className="space-y-2">
         <Label htmlFor="category">Category</Label>
@@ -88,21 +100,28 @@ export function ProductForm({
             ))}
           </SelectContent>
         </Select>
-        {/* {error?.categoryId && (
-          <div className="text-destructive">{error.categoryId}</div>
-        )} */}
+        {isFormErrors(error) && error.file && (
+          <p className="text-destructive">{error.file[0]}</p>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="file">File</Label>
         <Input type="file" id="file" name="file" required={product === null} />
         {product != null && (
-          <div className="text-muted-foreground">{product.filePath}</div>
+          <p className="text-muted-foreground">{product.filePath}</p>
         )}
-        {/* {error?.file && <div className="text-destructive">{error.file}</div>} */}
+        {isFormErrors(error) && error.image && (
+          <p className="text-destructive">{error.image[0]}</p>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="image">Image</Label>
-        <Input type="file" id="image" name="image" required={product === null} />
+        <Input
+          type="file"
+          id="image"
+          name="image"
+          required={product === null}
+        />
         {product != null && product.imagePath && (
           <Image
             src={product.imagePath}
@@ -111,7 +130,9 @@ export function ProductForm({
             alt="product"
           />
         )}
-        {/* {error?.image && <div className="text-destructive">{error.image}</div>} */}
+        {!isFormErrors(error) && "error" in error && (
+          <p className="text-destructive">{error.error}</p>
+        )}
       </div>
       <SubmitButton />
     </form>

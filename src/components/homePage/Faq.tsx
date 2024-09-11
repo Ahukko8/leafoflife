@@ -53,12 +53,17 @@ const FAQList: React.FC = () => {
   return (
     <section className="bg-gray-100 py-12">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-8">Frequently Asked Questions</h2>
-        <div className="space-y-4">
-          {faqData.map((faq, index) => (
-            <FAQItem key={index} {...faq} />
-          ))}
+        {/* Added border-t class for the top line */}
+        <div className="border-t border-gray-300 pt-12">
+          <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-8">Frequently Asked Questions</h2>
+          <div className="space-y-4">
+            {faqData.map((faq, index) => (
+              <FAQItem key={index} {...faq} />
+            ))}
+          </div>
         </div>
+        {/* Added border-b class for the bottom line */}
+        <div className="border-b border-gray-300 pb-12"></div>
       </div>
     </section>
   );

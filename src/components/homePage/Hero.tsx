@@ -24,9 +24,9 @@ const Hero = () => {
           <Image
             src="/img/hero-img2.png"
             alt="Hero Image"
-            layout="fill"
-            objectFit="contain"
-            className="md:object-right "
+            fill
+            style={{ objectFit: 'contain' }}
+            className="md:object-right"
           />
         </div>
       </div>

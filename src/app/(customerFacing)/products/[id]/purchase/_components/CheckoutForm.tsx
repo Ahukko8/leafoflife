@@ -12,7 +12,6 @@ import { formatCurrency } from "@/lib/formatters";
 import Image from "next/image";
 import { loadStripe } from "@stripe/stripe-js";
 import { useState } from "react";
-import { Textarea } from "@/src/components/ui/textarea";
 import PhoneInput from "react-phone-input-2";
 import { Input } from "@/src/components/ui/input";
 
@@ -25,24 +24,33 @@ type CheckoutFormProps = {
     priceInCents: number;
     description: string;
   };
-  clientSecret: string;
+  imagePath: string;
 };
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
 );
 
-export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
+export function CheckoutForm({ product, imagePath }: CheckoutFormProps) {
+  const [imageError, setImageError] = useState(false);
   return (
     <div className="max-w-5xl w-full mx-auto space-y-8">
       <div className="flex gap-4 items-center">
         <div className="aspect-video flex-shrink-0 w-1/3 relative">
+        {imagePath ? (
           <Image
             src={product.imagePath}
             fill
             alt={product.name}
             className="object-cover"
+            onError={() => setImageError(true)}
           />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
+            Image not available
+          </div>
+        )}
+         
         </div>
         <div>
           <div className="text-lg">{formatCurrency(product.priceInCents)}</div>

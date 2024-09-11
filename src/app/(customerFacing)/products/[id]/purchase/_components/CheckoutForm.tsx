@@ -15,10 +15,11 @@ import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import { Input } from "@/src/components/ui/input";
 
+
 type CheckoutFormProps = {
   product: {
     id: string;
-    imagePath?: string;
+    imagePath: string;
     name: string;
     priceInCents: number;
     description: string;
@@ -35,18 +36,12 @@ export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
     <div className="max-w-5xl w-full mx-auto space-y-8">
       <div className="flex gap-4 items-center">
         <div className="aspect-video flex-shrink-0 w-1/3 relative">
-          {product.imagePath ? (
-            <Image
-              src={product.imagePath}
-              fill
-              alt={product.name}
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex items-center justify-center w-full h-full bg-gray-200">
-              No image available
-            </div>
-          )}
+          <Image
+            src={product.imagePath}
+            fill
+            alt={product.name}
+            className="object-cover"
+          />
         </div>
         <div>
           <div className="text-lg">{formatCurrency(product.priceInCents)}</div>
@@ -99,9 +94,7 @@ function Form({
       });
 
       if (response.ok) {
-        setStatus(
-          "Thank you! We have received your product request. We will contact you for confirmation as soon as possible!"
-        );
+        setStatus("Thank you! We have received your product request. We will contact you for confirmation as soon as possible!");
         setFormData({
           customerName: "",
           productName: "",
@@ -187,12 +180,6 @@ function Form({
               />
             </div>
             <div className="p-5">
-              {/* <label
-                htmlFor="phone"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Phone Number
-              </label> */}
               <PhoneInput
                 country="mv"
                 value={formData.phone}
@@ -203,23 +190,6 @@ function Form({
                 }}
               />
             </div>
-            {/* <div>
-              <label
-                htmlFor="message"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Message your treatment details
-              </label>
-              <Textarea
-                onChange={handleChange}
-                id="message"
-                name="message"
-                rows={4}
-                required
-                className="mt-1"
-                value={formData.message}
-              />
-            </div> */}
             <Button className="w-full" size="lg" disabled={isLoading}>
               {isLoading ? "SENDING..." : "SEND ORDER"}
             </Button>

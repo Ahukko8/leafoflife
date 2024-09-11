@@ -15,42 +15,38 @@ import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import { Input } from "@/src/components/ui/input";
 
-
 type CheckoutFormProps = {
   product: {
     id: string;
-    imagePath: string;
+    imagePath?: string;
     name: string;
     priceInCents: number;
     description: string;
   };
-  imagePath: string;
+  clientSecret: string;
 };
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
 );
 
-export function CheckoutForm({ product, imagePath }: CheckoutFormProps) {
-  const [imageError, setImageError] = useState(false);
+export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
   return (
     <div className="max-w-5xl w-full mx-auto space-y-8">
       <div className="flex gap-4 items-center">
         <div className="aspect-video flex-shrink-0 w-1/3 relative">
-        {imagePath ? (
-          <Image
-            src={product.imagePath}
-            fill
-            alt={product.name}
-            className="object-cover"
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
-            Image not available
-          </div>
-        )}
-         
+          {product.imagePath ? (
+            <Image
+              src={product.imagePath}
+              fill
+              alt={product.name}
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex items-center justify-center w-full h-full bg-gray-200">
+              No image available
+            </div>
+          )}
         </div>
         <div>
           <div className="text-lg">{formatCurrency(product.priceInCents)}</div>
@@ -103,7 +99,9 @@ function Form({
       });
 
       if (response.ok) {
-        setStatus("Thank you! We have received your product request. We will contact you for confirmation as soon as possible!");
+        setStatus(
+          "Thank you! We have received your product request. We will contact you for confirmation as soon as possible!"
+        );
         setFormData({
           customerName: "",
           productName: "",

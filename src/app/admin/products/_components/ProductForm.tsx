@@ -11,12 +11,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formatCurrency } from "@/lib/formatters";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { addProduct, updateProduct } from "../../_actions/products";
 import { useFormState, useFormStatus } from "react-dom";
 import { Product, Category } from "@prisma/client";
 import Image from "next/image";
-import db from "@/src/db/db";
 
 export function ProductForm({
   product,
@@ -33,8 +32,6 @@ export function ProductForm({
     product?.priceInCents
   );
 
-  const [selectedCategory, setSelectedCategory] = useState('');
-
   return (
     <form action={action} className="space-y-8">
       <div className="space-y-2">
@@ -46,7 +43,7 @@ export function ProductForm({
           required
           defaultValue={product?.name || ""}
         />
-        {error.name && <div className="text-destructive">{error.name}</div>}
+        {/* {error?.name && <div className="text-destructive">{error.name}</div>} */}
       </div>
       <div className="space-y-2">
         <Label htmlFor="priceInCents">Price</Label>
@@ -61,9 +58,9 @@ export function ProductForm({
         <div className="text-muted-foreground">
           {formatCurrency(priceInCents || 0)}
         </div>
-        {error.priceInCents && (
+        {/* {error?.priceInCents && (
           <div className="text-destructive">{error.priceInCents}</div>
-        )}
+        )} */}
       </div>
       <div className="space-y-2">
         <Label htmlFor="description">Description</Label>
@@ -73,9 +70,9 @@ export function ProductForm({
           required
           defaultValue={product?.description || ""}
         />
-        {error.description && (
+        {/* {error?.description && (
           <div className="text-destructive">{error.description}</div>
-        )}
+        )} */}
       </div>
       <div className="space-y-2">
         <Label htmlFor="category">Category</Label>
@@ -91,9 +88,9 @@ export function ProductForm({
             ))}
           </SelectContent>
         </Select>
-        {error.categoryId && (
+        {/* {error?.categoryId && (
           <div className="text-destructive">{error.categoryId}</div>
-        )}
+        )} */}
       </div>
       <div className="space-y-2">
         <Label htmlFor="file">File</Label>
@@ -101,25 +98,20 @@ export function ProductForm({
         {product != null && (
           <div className="text-muted-foreground">{product.filePath}</div>
         )}
-        {error.file && <div className="text-destructive">{error.file}</div>}
+        {/* {error?.file && <div className="text-destructive">{error.file}</div>} */}
       </div>
       <div className="space-y-2">
         <Label htmlFor="image">Image</Label>
-        <Input
-          type="file"
-          id="image"
-          name="image"
-          required={product === null}
-        />
-        {product != null && (
+        <Input type="file" id="image" name="image" required={product === null} />
+        {product != null && product.imagePath && (
           <Image
-            src={product?.imagePath}
+            src={product.imagePath}
             height="200"
             width="200"
             alt="product"
           />
         )}
-        {error.image && <div className="text-destructive">{error.image}</div>}
+        {/* {error?.image && <div className="text-destructive">{error.image}</div>} */}
       </div>
       <SubmitButton />
     </form>
@@ -136,5 +128,5 @@ function SubmitButton() {
     >
       {pending ? "Saving..." : "Save"}
     </Button>
-  )
+  );
 }

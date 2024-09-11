@@ -25,7 +25,10 @@ export default async function PurchasePage({
 
   return (
     <CheckoutForm
-      product={product}
+    product={{
+      ...product,
+      imagePath: product.imagePath ?? "/default-image.png", // Provide a fallback image
+    }}
       clientSecret={paymentIntent.client_secret}
     />
   )

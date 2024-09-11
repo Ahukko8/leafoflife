@@ -64,7 +64,6 @@ async function ProductsTable() {
           <TableHead>Name</TableHead>
           <TableHead>Price</TableHead>
           <TableHead>Description</TableHead>
-          <TableHead>Orders</TableHead>
           <TableHead className="w-0">
             <span className="sr-only">Actions</span>
           </TableHead>
@@ -89,18 +88,12 @@ async function ProductsTable() {
             <TableCell>{product.name}</TableCell>
             <TableCell>{formatCurrency(product.priceInCents)}</TableCell>
             <TableCell>{product.description}</TableCell>
-            <TableCell>{formatNumber(product._count.orders)}</TableCell>
             <TableCell>
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <MoreVertical />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem asChild>
-                    <a download href={`/admin/products/${product.id}/download`}>
-                      Download
-                    </a>
-                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href={`/admin/products/${product.id}/edit`}>
                       Edit

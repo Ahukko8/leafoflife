@@ -68,11 +68,13 @@ export async function addProduct(prevState: unknown, formData: FormData): Promis
 
     
 
+    redirect("/admin/products")
     return { success: true};
   } catch (error) {
     console.error("Error adding product:", error);
     return { error: ["An unexpected error occurred while adding the product"] } as FormErrors;
   }
+
 }
 const editSchema = addSchema.extend({
   file: fileSchema.optional(),

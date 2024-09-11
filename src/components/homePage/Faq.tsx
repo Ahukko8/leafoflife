@@ -23,8 +23,8 @@ const faqData: FAQ[] = [
     answer: 'You can book an appointment by contacting us via phone or email, or by visiting our clinic in Ha. Kelaa.',
   },
   {
-    question: 'Do you offer online consultations?',
-    answer: 'Yes, we offer online consultations. Please contact us to schedule an appointment.',
+    question: 'Where are you located?',
+    answer: 'Our clinic building is located in Ha.Kelaa, Maldives.',
   },
 ];
 

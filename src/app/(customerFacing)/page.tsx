@@ -30,9 +30,9 @@ export default function HomePage() {
   return (
     <div>
       <Hero />
-      <div className="container py-5 pt-20 bg-[#62A83c]/10">
+      <div className="container py-10  bg-gray-100 ">
         <ProductGridSection
-          title="Most Popular Products"
+          title="Popular Products"
           productsFetcher={getMostPopularProducts}
         />
       </div>
@@ -55,13 +55,16 @@ function ProductGridSection({
   title,
 }: ProductGridSectionProps) {
   return (
-    <div className="space-y-4 ">
+    <div className="space-y-4">
       <div className="flex gap-4">
         <h2 className="text-3xl font-bold text-slate-700">{title}</h2>
-        <Button className="bg-[#62A83c] hover:bg-[#3E3C37]  font-bold" asChild>
+        <Button
+          className="w-auto bg-[#62A83c] text-white hover:bg-[#62A83c]/80"
+          size="lg"
+          asChild
+        >
           <Link href="/products" className="space-x-2">
             <span>View More</span>
-            <ArrowRight className="size-4" />
           </Link>
         </Button>
       </div>

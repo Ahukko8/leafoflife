@@ -27,9 +27,9 @@ type CheckoutFormProps = {
   clientSecret: string;
 };
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
-);
+// const stripePromise = loadStripe(
+//   process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
+// );
 
 export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
   return (
@@ -51,7 +51,7 @@ export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
           </div>
         </div>
       </div>
-      <Form priceInCents={product.priceInCents} productId={product.id} />
+      <Form productName={product.name} priceInCents={product.priceInCents} productId={product.id} />
     </div>
   );
 }
@@ -59,9 +59,11 @@ export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
 function Form({
   priceInCents,
   productId,
+  productName,
 }: {
   priceInCents: number;
   productId: string;
+  productName: string;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -69,7 +71,9 @@ function Form({
   const [status, setStatus] = useState("");
   const [formData, setFormData] = useState({
     customerName: "",
-    productName: "",
+    productName: productName,
+    productId: productId,
+    priceInCents: priceInCents,
     email: "",
     message: "",
     phone: "",
@@ -98,6 +102,8 @@ function Form({
         setFormData({
           customerName: "",
           productName: "",
+          productId: "",
+          priceInCents: 0,
           email: "",
           message: "",
           phone: "",
@@ -160,6 +166,23 @@ function Form({
                 required
                 className="mt-1"
                 value={formData.productName}
+              />
+            </div>
+            <div className="p-5">
+              <label
+                htmlFor="priceInCents"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Price
+              </label>
+              <Input
+                onChange={handleChange}
+                id="priceInCents"
+                name="priceInCents"
+                required
+                className="mt-1"
+                value={formData.priceInCents}
+                
               />
             </div>
             <div className="p-5">

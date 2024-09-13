@@ -56,7 +56,7 @@ const FAQList: React.FC = () => {
         {/* Added border-t class for the top line */}
         <div className="border-t border-gray-300 pt-12">
           <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-8">Frequently Asked Questions</h2>
-          <div className="space-y-4">
+          <div className="space-y-4 leading-relaxed text-justify">
             {faqData.map((faq, index) => (
               <FAQItem key={index} {...faq} />
             ))}

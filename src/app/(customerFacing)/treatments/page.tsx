@@ -118,7 +118,7 @@ export default function TreatmentsPage() {
       <div className="container mt-10 mx-auto py-8 px-4">
         <h1 className="text-4xl font-bold mb-8 text-left text-[#3E3C37]">DISEASES</h1>
         <div className="relative mb-8">
-          <p>
+          <p className="leading-relaxed text-justify">
             Below are some of the diseases we diagnose and treat using the above
             mentioned treatment methods. Consult us and we will undergo the
             appropriate treatment technique.
@@ -134,7 +134,7 @@ export default function TreatmentsPage() {
                 <CardTitle>
                   {highlightText(disease.title, searchTerm)}
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="leading-relaxed text-justify">
                   {highlightText(disease.description, searchTerm)}
                 </CardDescription>
               </CardHeader>

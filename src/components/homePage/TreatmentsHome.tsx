@@ -45,7 +45,7 @@ export default function TreatmentsSection({
               <h3 className="text-2xl font-semibold text-gray-700 mb-2">
                 {treatment.title}
               </h3>
-              <p className="text-gray-600">{treatment.description}</p>
+              <p className="text-gray-600 leading-relaxed text-justify">{treatment.description}</p>
             </div>
           ))}
         </div>

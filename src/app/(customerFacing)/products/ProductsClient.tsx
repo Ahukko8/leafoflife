@@ -1,6 +1,10 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { ProductCard, ProductCardSkeleton, ProductCardProps } from "@/src/components/ProductCard";
+import {
+  ProductCard,
+  ProductCardSkeleton,
+  ProductCardProps,
+} from "@/src/components/ProductCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
@@ -17,7 +21,10 @@ interface ProductsClientProps {
   initialProducts: ProductCardProps[];
 }
 
-function usePollingCategories(initialCategories: Category[], pollingInterval = 5000) {
+function usePollingCategories(
+  initialCategories: Category[],
+  pollingInterval = 5000
+) {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
 
   const fetchCategories = useCallback(async () => {
@@ -39,7 +46,11 @@ function usePollingCategories(initialCategories: Category[], pollingInterval = 5
   return categories;
 }
 
-async function fetchProducts(categoryId: string | null, page: number, searchTerm: string): Promise<{
+async function fetchProducts(
+  categoryId: string | null,
+  page: number,
+  searchTerm: string
+): Promise<{
   products: ProductCardProps[];
   pagination: { currentPage: number; totalPages: number; totalCount: number };
 }> {
@@ -89,7 +100,9 @@ export default function ProductsClient({
   };
 
   // Find the name of the selected category
-  const selectedCategoryName = categories.find((category) => category.id === selectedCategory)?.name || "All Products";
+  const selectedCategoryName =
+    categories.find((category) => category.id === selectedCategory)?.name ||
+    "All Products";
 
   return (
     <div className="container mx-auto px-4 py-8">

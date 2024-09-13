@@ -1,14 +1,3 @@
-// import { PageHeader } from "../../_components/PageHeader"
-// import { ProductForm } from "../_components/ProductForm"
-
-// export default function NewProductPage() {
-//   return (
-//     <>
-//       <PageHeader>Add Product</PageHeader>
-//       <ProductForm />
-//     </>
-//   )
-// }
 import { PageHeader } from "../../_components/PageHeader";
 import db from "@/src/db/db";
 import { ProductForm } from "../_components/ProductForm";

@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-  CardFooter,
 } from "../../../components/ui/card";
 import { Input } from "../../../components/ui/input";
 import { Search } from "lucide-react";

@@ -15,7 +15,6 @@ import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import { Input } from "@/src/components/ui/input";
 
-
 type CheckoutFormProps = {
   product: {
     id: string;
@@ -51,7 +50,11 @@ export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
           </div>
         </div>
       </div>
-      <Form productName={product.name} priceInCents={product.priceInCents} productId={product.id} />
+      <Form
+        productName={product.name}
+        priceInCents={product.priceInCents}
+        productId={product.id}
+      />
     </div>
   );
 }
@@ -98,7 +101,9 @@ function Form({
       });
 
       if (response.ok) {
-        setStatus("Thank you! We have received your product request. We will contact you for confirmation as soon as possible!");
+        setStatus(
+          "Thank you! We have received your product request. We will contact you for confirmation as soon as possible!"
+        );
         setFormData({
           customerName: "",
           productName: "",
@@ -182,7 +187,6 @@ function Form({
                 required
                 className="mt-1"
                 value={formData.priceInCents}
-                
               />
             </div>
             <div className="p-5">
@@ -213,7 +217,11 @@ function Form({
                 }}
               />
             </div>
-            <Button className="w-auto  bg-green-600 text-white hover:bg-green-700 transition-colors" size="lg" disabled={isLoading}>
+            <Button
+              className="w-auto  bg-green-600 text-white hover:bg-green-700 transition-colors"
+              size="lg"
+              disabled={isLoading}
+            >
               {isLoading ? "SENDING..." : "SEND ORDER"}
             </Button>
             {status && <p className="mt-2 text-sm text-gray-600">{status}</p>}

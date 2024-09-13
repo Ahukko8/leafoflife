@@ -1,7 +1,6 @@
 import "@/src/app/(customerFacing)/appointments/globals.css";
 import PatientForm from "@/src/components/forms/PatientForm";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function AppointmentHome() {
   return (
@@ -13,9 +12,6 @@ export default function AppointmentHome() {
             <p className="justify-items-end text-black xl:text-left">
               © 2024 Leaf Of Life Clinic
             </p>
-            <Link href="/admin" className="text-green-500">
-              Admin
-            </Link>
           </div>
         </div>
       </section>

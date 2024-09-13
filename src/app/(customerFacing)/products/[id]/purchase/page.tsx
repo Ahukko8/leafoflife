@@ -1,35 +1,35 @@
 import db from "@/src/db/db";
 import { notFound } from "next/navigation";
 import { CheckoutForm } from "./_components/CheckoutForm";
-import Stripe from "stripe"
+import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 export default async function PurchasePage({
   params: { id },
 }: {
-  params: { id: string }
+  params: { id: string };
 }) {
-  const product = await db.product.findUnique({ where: { id } })
-  if (product == null) return notFound()
+  const product = await db.product.findUnique({ where: { id } });
+  if (product == null) return notFound();
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount: product.priceInCents,
     currency: "USD",
     metadata: { productId: product.id },
-  })
+  });
 
   if (paymentIntent.client_secret == null) {
-    throw Error("Stripe failed to create payment intent")
+    throw Error("Stripe failed to create payment intent");
   }
 
   return (
     <CheckoutForm
-    product={{
-      ...product,
-      imagePath: product.imagePath ?? "/default-image.png", // Provide a fallback image
-    }}
+      product={{
+        ...product,
+        imagePath: product.imagePath ?? "/default-image.png", // Provide a fallback image
+      }}
       clientSecret={paymentIntent.client_secret}
     />
-  )
+  );
 }

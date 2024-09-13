@@ -177,7 +177,7 @@ export default function ProductsClient({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          Category: {selectedCategoryName}
+          {selectedCategoryName}
         </motion.h4>
       )}
 

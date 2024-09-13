@@ -40,7 +40,7 @@ export function CheckoutForm({ product, clientSecret }: CheckoutFormProps) {
             src={product.imagePath}
             fill
             alt={product.name}
-            className="object-cover"
+            className="object-contain"
           />
         </div>
         <div>
@@ -190,7 +190,7 @@ function Form({
                 }}
               />
             </div>
-            <Button className="w-full" size="lg" disabled={isLoading}>
+            <Button className="w-auto  bg-green-600 text-white hover:bg-green-700 transition-colors" size="lg" disabled={isLoading}>
               {isLoading ? "SENDING..." : "SEND ORDER"}
             </Button>
             {status && <p className="mt-2 text-sm text-gray-600">{status}</p>}

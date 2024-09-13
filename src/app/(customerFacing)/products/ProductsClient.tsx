@@ -345,7 +345,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -442,12 +441,29 @@ export default function ProductsClient({
     setShowCategories(false);
   };
 
+  const titleAnimation = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { 
+        duration: 0.7, 
+        ease: "easeOut" 
+      } 
+    },
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-        <h1 className="text-4xl font-bold text-slate-700 mb-4 md:mb-0">
+        <motion.h1
+          className="text-4xl font-bold text-slate-700 mb-4 md:mb-0"
+          initial="hidden"
+          animate="visible"
+          variants={titleAnimation}
+        >
           Discover our Products
-        </h1>
+        </motion.h1>
         <button
           onClick={() => setShowCategories(!showCategories)}
           className="md:hidden flex items-center justify-center bg-primary-leaf text-white px-4 py-2 rounded-full shadow-md transition-all duration-300 hover:bg-opacity-90"
@@ -464,7 +480,7 @@ export default function ProductsClient({
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.5 }}
               className="w-full md:w-1/4 mr-0 md:mr-6 mb-6 md:mb-0"
             >
               <div className="bg-white shadow-md rounded-lg overflow-hidden">
@@ -482,47 +498,59 @@ export default function ProductsClient({
         </AnimatePresence>
 
         <div className="flex-1">
-          <motion.div
-            layout
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            <AnimatePresence mode="popLayout">
-              {isLoading ? (
-                [...Array(6)].map((_, index) => (
-                  <motion.div
-                    key={`skeleton-${index}`}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {/* <ProductCardSkeleton /> */}
-                  </motion.div>
-                ))
-              ) : products.length > 0 ? (
-                products.map((product) => (
-                  <motion.div
-                    key={product.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ProductCard {...product} />
-                  </motion.div>
-                ))
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="col-span-full text-center text-lg text-gray-500"
-                >
-                  No products found.
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
+          <AnimatePresence mode="wait">
+            {isLoading ? (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {[...Array(6)].map((_, index) => (
+                  <ProductCardSkeleton key={`skeleton-${index}`} />
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="products"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                <AnimatePresence>
+                  {products.length > 0 ? (
+                    products.map((product) => (
+                      <motion.div
+                        key={product.id}
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <ProductCard {...product} />
+                      </motion.div>
+                    ))
+                  ) : (
+                    <motion.div
+                      key="no-products"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="col-span-full text-center text-lg text-gray-500"
+                    >
+                      No products found.
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

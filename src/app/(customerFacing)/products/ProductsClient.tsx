@@ -105,7 +105,7 @@ export default function ProductsClient({
     "All Products";
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="mt-20 container mx-auto px-4 py-8">
       <motion.section
         className="text-[#3E3C37] py-12 mb-8 rounded-2xl shadow-lg"
         initial={{ opacity: 0, y: -20 }}

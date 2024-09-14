@@ -56,7 +56,7 @@ export default function TreatmentsPage() {
 
   return (
     <div className="container mx-auto py-8 px-4 bg-[url(/img/bg.jpg)]">
-      <h1 className="text-4xl font-bold mb-8 text-left text-[#3E3C37] font-sans">TREATMENTS</h1>
+      <h1 className="mt-20 text-4xl font-bold mb-8 text-left text-[#3E3C37] font-sans">TREATMENTS</h1>
       <div className="relative mb-8">
         <Input
           type="text"

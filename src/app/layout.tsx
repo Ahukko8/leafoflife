@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { GoogleTagManager } from '@next/third-parties/google'
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body className={cn("bg-background min-h-screen font-sans antialiased", inter.variable)}>
         {children}
         <GoogleTagManager gtmId={GA_MEASUREMENT_ID} />
+        <Toaster />
       </body>
     </html>
   );

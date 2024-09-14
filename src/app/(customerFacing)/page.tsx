@@ -5,7 +5,6 @@ import { Button } from "@/src/components/ui/button";
 import db from "@/src/db/db";
 import { cache } from "@/lib/cache";
 import { Product } from "@prisma/client";
-import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import ContactUs from "@/src/components/homePage/Contact";
@@ -28,13 +27,15 @@ const getMostPopularProducts = cache(
 
 export default function HomePage() {
   return (
-    <div>
+    <div className="mt-10">
       <Hero />
       <div className="container py-10  bg-gray-100 ">
         <ProductGridSection
           title="Popular Products"
           productsFetcher={getMostPopularProducts}
         />
+      </div>
+      <div>
       </div>
       <TreatmentsHome treatments={treatments} />
       <AboutUs />

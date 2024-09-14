@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function AppointmentHome() {
   return (
-    <div className="flex h-screen max-h-screen">
+    <div className="mt-20 flex h-screen max-h-screen">
       <section className="remove-scrollbar flex-1 overflow-y-auto px-[5%] my-auto">
         <div className="mx-auto flex size-full flex-col py-1 max-w-[496px]">
           <PatientForm />

@@ -94,10 +94,10 @@ const NavBar = () => {
   ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white shadow-md" : "bg-transparent"}`}>
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white shadow-md" : "bg-primary-leaf"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 md:h-20">
-          <Link href="/" className="text-2xl font-bold text-green-600">
+          <Link href="/">
           <Image src="/logo.png" width={50} height={50} alt="logo" />
           </Link>
 

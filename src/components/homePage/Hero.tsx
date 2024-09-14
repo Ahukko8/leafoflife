@@ -8,7 +8,7 @@ const Hero = () => {
   return (
     <section className="relative min-h-screen flex flex-col bg-[url(/img/bg.jpg)] bg-cover bg-center">
       {/* Logo */}
-      <div className="absolute top-0 left-0 p-4 z-20">
+      {/* <div className="absolute top-0 left-0 p-4 z-20">
         <Image
           src="/logo.png"
           alt="Leaf of Life Clinic Logo"
@@ -16,7 +16,7 @@ const Hero = () => {
           height={100}
           className="w-auto h-12 sm:h-16 md:h-15 md:ml-16"
         />
-      </div>
+      </div> */}
 
       {/* Hero image - now at the top for mobile */}
       <div className="w-full md:w-[30%] md:absolute md:right-0 md:top-0 md:bottom-0 z-10 ">

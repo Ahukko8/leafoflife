@@ -47,6 +47,7 @@ const ContactUs: React.FC = () => {
   };
 
   return (
+    
     <section className="flex flex-col md:flex-row bg-gray-100 p-6 rounded-lg shadow-md">
       {/* Contact Form Section */}
       <div className="w-full md:w-1/2 md:pr-6 mb-6 md:mb-0">
@@ -139,12 +140,13 @@ const ContactUs: React.FC = () => {
         <div className="relative h-96">
           {/* Replace with your actual map iframe or component */}
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.8817168093126!2d-122.41941808468121!3d37.77492927975909!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085808d8f34c75d%3A0x0!2zMzfCsDMzJzUxLjMiTiA3M8KwMjknNTkuMiJX!5e0!3m2!1sen!2sus!4v1632836739646!5m2!1sen!2sus"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.415777440523!2d73.21434637404874!3d6.96018181793672!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b6d3b0016ca8b41%3A0xec9deb0ad61acfa9!2sLeaf%20of%20life%20clinic!5e0!3m2!1sen!2smv!4v1741028009145!5m2!1sen!2smv"
             width="100%"
             height="100%"
             allowFullScreen
             loading="lazy"
             className="absolute inset-0"
+            
           />
         </div>
       </div>

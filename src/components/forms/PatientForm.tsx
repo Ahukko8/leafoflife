@@ -24,7 +24,21 @@ const PatientForm = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+
+    if (name === "idCardNumber") {
+
+      const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1);
+
+
+      if (/^[A-Z][0-9]*$/.test(capitalizedValue) || capitalizedValue === "") {
+         setFormData((prevData) => ({ ...prevData, [name]: capitalizedValue }));
+      }
+    }
+    else {
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    }
+
   };
 
 
@@ -92,18 +106,18 @@ const PatientForm = () => {
               value={formData.email}
             />
           </div>
-               <div>
-            <label
-              htmlFor="ID Card Number"
+          <div>
+           <label
+              htmlFor="idCard"
               className="block text-sm font-medium text-gray-700"
             >
               ID Card Number
             </label>
             <Input
               onChange={handleChange}
-              type="number"
-              id="number"
-              name="ID Card Number"
+              type="idCard"
+              id="idCard"
+              name="idCardNumber"
               required
               className="mt-1"
               value={formData.idCardNumber}

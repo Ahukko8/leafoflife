@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, message, phone } = await req.json();
+    const { name, email, message, phone, idCardNumber } = await req.json();
     const botToken = process.env.TELEGRAM_BOT_TOKEN; // Replace with your bot token
     const chatId = process.env.TELEGRAM_CHAT_ID; // Replace with your chat ID
-    const text = `Name: ${name}\nEmail: ${email}\nMessage: ${message}\nPhone: ${phone}`;
+    const text = `Name: ${name}\nEmail: ${email}\nMessage: ${message}\nPhone: ${phone}\nID Card: ${idCardNumber}`;
 
     const telegramResponse = await fetch(
       `https://api.telegram.org/bot${botToken}/sendMessage`,

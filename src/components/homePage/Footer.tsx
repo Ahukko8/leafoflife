@@ -19,9 +19,17 @@ const Footer: React.FC = () => {
             <Button className="text-white hover:text-indigo-400">
               <FaViber size={24} />
             </Button>
-            <Button className="text-white hover:text-indigo-400">
-              <FaInstagram size={24} />
-              <Link href="https://www.instagram.com/leaf_of_life_clinic_?utm_source=ig_web_button_share_sheet&igsh=NWRnMWVzNHVsOTJq"/>
+            <Button
+              onClick={() =>
+                 window.open(
+                  "https://www.instagram.com/leaf_of_life_clinic_?utm_source=ig_web_button_share_sheet&igsh=NWRnMWVzNHVsOTJq",
+                   "_blank"
+                     )
+                        }
+                 className="text-white hover:text-indigo-400 flex items-center gap-2"
+                        >
+                <FaInstagram size={24} />
+                Instagram
             </Button>
             <Button className="text-white hover:text-indigo-400">
               <FaLinkedin size={24} />

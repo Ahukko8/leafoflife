@@ -15,6 +15,7 @@ const PatientForm = () => {
     email: "",
     message: "",
     phone: "",
+    idCardNumber: "",
   });
 
 
@@ -40,7 +41,7 @@ const PatientForm = () => {
 
       if (response.ok) {
         setStatus("Thank you! We have received your appointment request.");
-        setFormData({ name: "", email: "", message: "",  phone: "" });
+        setFormData({ name: "", email: "", message: "",  phone: "", idCardNumber: "" });
       } else {
         setStatus("Failed to submit the appointment request.");
       }
@@ -91,7 +92,24 @@ const PatientForm = () => {
               value={formData.email}
             />
           </div>
-          <div className="">
+               <div>
+            <label
+              htmlFor="ID Card Number"
+              className="block text-sm font-medium text-gray-700"
+            >
+              ID Card Number
+            </label>
+            <Input
+              onChange={handleChange}
+              type="number"
+              id="number"
+              name="ID Card Number"
+              required
+              className="mt-1"
+              value={formData.idCardNumber}
+            />
+          </div>
+          <div>
             <label
               htmlFor="phone"
               className="block text-sm font-medium text-gray-700"

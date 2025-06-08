@@ -16,16 +16,25 @@ const Footer: React.FC = () => {
             <Button className="text-white hover:text-indigo-400">
               <FaFacebook size={24} />
             </Button>
-            <Button className="text-white hover:text-indigo-400">
+            {/* <Button className="text-white hover:text-indigo-400">
               <FaViber size={24} />
-            </Button>
-            <Button  className="text-white hover:text-indigo-400">
+            </Button> */}
+            {/* <Button  className="text-white hover:text-indigo-400">
               <FaInstagram size={24} />
-              <Link href="https://www.instagram.com/leaf_of_life_clinic_?utm_source=ig_web_button_share_sheet&igsh=NWRnMWVzNHVsOTJq"/>
-            </Button>
-            <Button className="text-white hover:text-indigo-400">
+            </Button> */}
+            <Link
+              href="https://www.instagram.com/leaf_of_life_clinic_?utm_source=ig_web_button_share_sheet&igsh=NWRnMWVzNHVsOTJq"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button className="text-white hover:text-indigo-400 flex items-center gap-2">
+                <FaInstagram size={24} />
+               Instagram
+              </Button>
+            </Link>
+            {/* <Button className="text-white hover:text-indigo-400">
               <FaLinkedin size={24} />
-            </Button>
+            </Button> */}
           </div>
         </div>
         {/* Contact Information */}

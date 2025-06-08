@@ -16,9 +16,9 @@ const Footer: React.FC = () => {
             <Button className="text-white hover:text-indigo-400">
               <FaFacebook size={24} />
             </Button>
-            <Button className="text-white hover:text-indigo-400">
+            {/* <Button className="text-white hover:text-indigo-400">
               <FaViber size={24} />
-            </Button>
+            </Button> */}
             <Button
               onClick={() =>
                  window.open(
@@ -30,9 +30,6 @@ const Footer: React.FC = () => {
                         >
                 <FaInstagram size={24} />
                 Instagram
-            </Button>
-            <Button className="text-white hover:text-indigo-400">
-              <FaLinkedin size={24} />
             </Button>
           </div>
         </div>

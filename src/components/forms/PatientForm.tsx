@@ -66,14 +66,15 @@ const PatientForm = () => {
   };
 
   return (
-      <form onSubmit={handleSubmit} className="space-y-6 flex-1">
-        <section className="mb-12 space-y-4">
+      <form onSubmit={handleSubmit}>
+        <div>
           <h1 className="header">MAKE AN APPOINTMENT </h1>
           <p className="text-black">
             Send us your details and schedule your appointment!
           </p>
-        </section>
-        <div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <div>
             <label
               htmlFor="name"
               className="block text-sm font-medium text-gray-700"
@@ -134,10 +135,9 @@ const PatientForm = () => {
               country="mv"
               value={formData.phone}
               onChange={(phone) => setFormData({ ...formData, phone })}
+              containerClass="mt-1"
               placeholder="+960 000 0000"
-              inputProps={{
-                className: "flex flex-row ml-10 w-[93%] h-9 rounded-md",
-              }}
+              inputClass="w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
           <div>
@@ -159,6 +159,7 @@ const PatientForm = () => {
           </div>
         <SubmitButton isLoading={isLoading}>BOOK APPOINTMENT</SubmitButton>
         {status && <p className="mt-2 text-sm text-gray-600">{status}</p>}
+        </div>
       </form>
     
   );

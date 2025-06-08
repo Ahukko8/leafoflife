@@ -7,8 +7,13 @@ const OpeningHours: React.FC = () => {
     { day: "Night", time: "20:45 pM - 22:30 PM" },
   ];
 
-  const weekendDayHours = [
+  const FridayHours = [
     {day: "Morning", time: "On Call"},
+    {day: "Night", time: "20:45 pM - 22:30 PM"}
+  ]
+
+  const SaturdayHours = [
+    {day: "Morning", time: "9:00 AM - 11:30 AM"},
     {day: "Night", time: "20:45 pM - 22:30 PM"}
   ]
 
@@ -29,9 +34,21 @@ const OpeningHours: React.FC = () => {
           </li>
         ))}
       </ul>
-      <h4 className="mt-5">Firday & Saturday</h4>
+      <h4 className="mt-5">Firday</h4>
       <ul className="space-y-2">
-        {weekendDayHours.map(({ day, time }) => (
+        {FridayHours.map(({ day, time }) => (
+          <li
+            key={day}
+            className="flex justify-between text-base text-gray-700"
+          >
+            <span>{day}</span>
+            <span>{time}</span>
+          </li>
+        ))}
+      </ul>
+       <h4 className="mt-5">Saturday</h4>
+      <ul className="space-y-2">
+        {SaturdayHours.map(({ day, time }) => (
           <li
             key={day}
             className="flex justify-between text-base text-gray-700"

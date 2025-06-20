@@ -8,7 +8,7 @@ export default function ProductLayout({
     return (
         <>
             
-            <div className="container my-6">{children}</div>
+            <div className="my-20 pt-5">{children}</div>
         </>
     )
 }

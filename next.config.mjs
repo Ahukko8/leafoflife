@@ -4,7 +4,7 @@ const nextConfig = {
       remotePatterns: [
         {
           protocol: 'https',
-          hostname: 'productimagestorage.blr1.digitaloceanspaces.com',
+          hostname: 'leafoflife.nyc3.digitaloceanspaces.com',
           port: '',
           pathname: '/products/**',
         },

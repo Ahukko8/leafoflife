@@ -22,7 +22,7 @@ type CheckoutFormProps = {
     priceInCents: number;
     description: string;
   };
-  clientSecret: string;
+  clientSecret?: string;
 };
 
 export function CheckoutForm({ product }: CheckoutFormProps) {
@@ -41,9 +41,12 @@ export function CheckoutForm({ product }: CheckoutFormProps) {
           <h1 className="text-2xl font-bold text-[#3E3C37]">{product.name}</h1>
           <p className="text-sm text-muted-foreground text-justify">{product.description}</p>
           <p className="text-lg font-semibold text-[#3E3C37]">
-            {formatCurrency(product.priceInCents)} <span className="text-sm text-muted-foreground">(per item)</span> 
+            {formatCurrency(product.priceInCents)}{" "}
+            <span className="text-sm text-muted-foreground">(per item)</span>
           </p>
-          <span className="text-sm text-muted-foreground text-red-500 italic">(*Shipping cost and other charges will apply*)</span>
+          <span className="text-sm text-muted-foreground text-red-500 italic">
+            (*Shipping cost and other charges will apply*)
+          </span>
         </div>
       </div>
 
@@ -68,20 +71,22 @@ function Form({
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
-  const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
+
+  // Quantity is string to allow empty input
   const [formData, setFormData] = useState({
     customerName: "",
     productName,
     productId,
     priceInCents,
-    quantity: 1,
+    quantity: "1",
     email: "",
     message: "",
     phone: "",
   });
 
-  const totalPrice = priceInCents * formData.quantity;
-  const router = useRouter();
+  const quantityNumber = Number(formData.quantity);
+  const totalPrice = quantityNumber > 0 ? priceInCents * quantityNumber : 0;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -90,37 +95,47 @@ function Form({
 
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "quantity" ? Number(value) || 1 : value,
+      [name]: name === "quantity" ? value : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMessage(undefined);
+
     try {
+      // Prepare data for submission, quantity as number >= 0
+      const quantityNum = Number(formData.quantity);
+      const submitData = {
+        ...formData,
+        quantity: quantityNum > 0 ? quantityNum : 0,
+      };
+
       const response = await fetch("/api/sendProducts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       });
 
       if (response.ok) {
-        setShowModal(true);
         toast({
-          description: "Your order has been sent. We will contact you shortly!",
+          description:
+            "Your order has been sent. We will contact you shortly!",
           className: "border-green-600",
         });
+        // Reset form (quantity back to "1")
         setFormData({
           customerName: "",
           productName,
           productId,
           priceInCents,
-          quantity: 1,
+          quantity: "1",
           email: "",
           message: "",
           phone: "",
         });
-         router.push("/products");
+        router.push("/products");
       } else {
         setErrorMessage("Failed to submit the order.");
       }
@@ -131,10 +146,11 @@ function Form({
     }
   };
 
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const onlyNums = e.target.value.replace(/[^\d+]/g, ""); // allow digits and + sign only
-  e.target.value = onlyNums;
-};
+  // Restrict phone input to digits and plus sign
+  const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onlyNums = e.target.value.replace(/[^\d+]/g, "");
+    setFormData((prev) => ({ ...prev, phone: onlyNums }));
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -150,15 +166,20 @@ function Form({
 
         <CardContent className="space-y-5">
           <p className="text-sm text-muted-foreground">
-            Fill in your information to place the order. We&#39;ll contact you for confirmation.
+            Fill in your information to place the order. We&#39;ll contact you
+            for confirmation.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="customerName"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Customer Name
               </label>
               <Input
+                id="customerName"
                 name="customerName"
                 required
                 value={formData.customerName}
@@ -167,10 +188,14 @@ function Form({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Email
               </label>
               <Input
+                id="email"
                 type="email"
                 name="email"
                 required
@@ -180,23 +205,39 @@ function Form({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="quantity"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Quantity
               </label>
               <Input
+                id="quantity"
                 type="number"
                 name="quantity"
-                min={1}
+                min={0}
                 value={formData.quantity}
                 onChange={handleChange}
+                onKeyDown={(e) => {
+                  // Prevent invalid keys like e, +, -
+                  if (["e", "+", "-"].includes(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                inputMode="numeric"
+                pattern="[0-9]*"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="totalPrice"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Total Price
               </label>
               <Input
+                id="totalPrice"
                 readOnly
                 value={formatCurrency(totalPrice)}
                 className="bg-gray-100 cursor-not-allowed"
@@ -204,17 +245,22 @@ function Form({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Phone
               </label>
-                <Input
-                  type="tel"
-                  name="phone"
-                  required
-                  pattern="^\+?([0-9]{1,3})?[-.\s]?([0-9]{6,14})$"
-                  placeholder="+960 000 0000"
-                  onChange={handleInput}
-                />
+              <Input
+                id="phone"
+                type="tel"
+                name="phone"
+                required
+                pattern="^\+?([0-9]{1,3})?[-.\s]?([0-9]{6,14})$"
+                placeholder="+960 000 0000"
+                value={formData.phone}
+                onChange={handlePhoneInput}
+              />
             </div>
           </div>
 

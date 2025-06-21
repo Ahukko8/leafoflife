@@ -18,7 +18,7 @@ const getMostPopularProducts = cache(
     return db.product.findMany({
       where: { isAvailableForPurchase: true },
       orderBy: { createdAt: "desc" },
-      take: 6,
+      take: 3,
     });
   },
   ["/", "getMostPopularProducts"],
@@ -31,7 +31,7 @@ export default function HomePage() {
       <Hero />
       <div className="container py-10  bg-gray-100 ">
         <ProductGridSection
-          title="Popular Products"
+          title="Our Products"
           productsFetcher={getMostPopularProducts}
         />
       </div>

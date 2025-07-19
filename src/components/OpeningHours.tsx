@@ -8,13 +8,13 @@ const OpeningHours: React.FC = () => {
   ];
 
   const FridayHours = [
-    {day: "Morning", time: "On Call"},
-    {day: "Night", time: "20:45 pM - 22:30 PM"}
+    {day: "Morning", time: "Off"},
+    {day: "Night", time: "on call"}
   ]
 
   const SaturdayHours = [
     {day: "Morning", time: "9:00 AM - 11:30 AM"},
-    {day: "Night", time: "20:45 pM - 22:30 PM"}
+    {day: "Night", time: "on call"}
   ]
 
   return (

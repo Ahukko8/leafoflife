@@ -1,21 +1,19 @@
 import "@/src/app/(customerFacing)/appointments/globals.css";
 import PatientForm from "@/src/components/forms/PatientForm";
+import Footer from "@/src/components/homePage/Footer";
+import NavBar from "@/src/components/Navbar";
 import Image from "next/image";
 
 export default function AppointmentHome() {
   return (
-    <div className="mt-20 flex h-screen max-h-screen">
+   <div>
+    <NavBar/>
+     <div className="flex">
       <section className="remove-scrollbar flex-1 overflow-y-auto px-[5%] my-auto">
-        <div className="mx-auto flex size-full flex-col py-1 max-w-[496px]">
+        <div className="mt-20 mx-auto flex size-full flex-col py-1 max-w-[496px]">
           <PatientForm />
-          <div className="text-14-regular mt-5 flex justify-between">
-            <p className="justify-items-end text-black xl:text-left">
-              © 2024 Leaf Of Life Clinic
-            </p>
-          </div>
         </div>
       </section>
-
       <Image
         src="/img/hero-secondary.jpg"
         height={1000}
@@ -24,5 +22,7 @@ export default function AppointmentHome() {
         className="side-img max-w-[50%]"
       />
     </div>
+    <Footer/>
+   </div>
   );
 }

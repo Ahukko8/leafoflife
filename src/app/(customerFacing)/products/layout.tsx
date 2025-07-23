@@ -6,9 +6,6 @@ export default function ProductLayout({
     children: React.ReactNode
 }>) {
     return (
-        <>
-            
-            <div className="my-20 pt-5">{children}</div>
-        </>
+            <div>{children}</div>
     )
 }

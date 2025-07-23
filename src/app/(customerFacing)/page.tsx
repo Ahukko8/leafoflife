@@ -12,6 +12,7 @@ import AboutUs from "@/src/components/homePage/About";
 import Footer from "@/src/components/homePage/Footer";
 import Faq from "@/src/components/homePage/Faq";
 import treatments from "@/src/app/constants/treatments";
+import Navbar from "@/src/components/Navbar";
 
 const getMostPopularProducts = cache(
   () => {
@@ -27,7 +28,8 @@ const getMostPopularProducts = cache(
 
 export default function HomePage() {
   return (
-    <div className="mt-10">
+    <div>
+      <Navbar/>
       <Hero />
       <div className="container py-10  bg-gray-100 ">
         <ProductGridSection

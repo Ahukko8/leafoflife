@@ -15,6 +15,8 @@ import diseases from "@/src/app/constants/diseases";
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
 import Image from "next/image";
+import NavBar from "@/src/components/Navbar";
+import Footer from "@/src/components/homePage/Footer";
 
 export default function TreatmentsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,7 +57,9 @@ export default function TreatmentsPage() {
   });
 
   return (
-    <div className="container mx-auto py-8 px-4 bg-[url(/img/bg.jpg)]">
+    <div>
+      <NavBar />
+      <div className="container mx-auto py-8 px-4 bg-[url(/img/bg.jpg)]">
       <h1 className="mt-20 text-4xl font-bold mb-8 text-left text-[#3E3C37] font-sans">TREATMENTS</h1>
       <div className="relative mb-8">
         <Input
@@ -153,21 +157,8 @@ export default function TreatmentsPage() {
           <p className="text-center text-gray-500 mt-8">No diseases found.</p>
         )}
       </div>
-      <div className="w-full h-[1px]  mb-20 bg-gray-300">
-        <div className="flex items-center justify-center">
-          <Image
-            src="/logo.png"
-            alt="Leaf of Life Clinic"
-            className="mt-5"
-            width={50}
-            height={50}
-          />
-        </div>
-        <p className="text-center text-slate-500 text-sm">
-          &copy; {new Date().getFullYear()} Leaf of Life Clinic, Ha.Kelaa. All
-          rights reserved.
-        </p>
-      </div>
+    </div>
+    <Footer />
     </div>
   );
 }

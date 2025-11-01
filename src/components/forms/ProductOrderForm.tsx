@@ -1,161 +1,139 @@
 "use client";
-import { useState } from "react";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
 
-const ProductOrderForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState("");
-  const [formData, setFormData] = useState({
-    customerName: "",
-    productName: "",
+import { useState } from "react";
+import { Input } from "@/src/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/src/components/ui/textarea";
+import { toast } from "sonner";
+
+export default function ProductOrderForm() {
+  const [form, setForm] = useState({
+    name: "",
     email: "",
-    message: "",
-    phone: "",
+    reference: "",
+    amount: "",
+    notes: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!form.name || !form.email || !form.amount) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const response = await fetch("/api/sendMessage", {
+      const res = await fetch("/api/sendProducts", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: form.amount,
+          reference: form.reference || `REF-${Date.now()}`,
+          customerEmail: form.email,
+          customerName: form.name,
+        }),
       });
 
-      if (response.ok) {
-        setStatus("Thank you! We have received your appointment request.");
-        setFormData({
-          customerName: "",
-          productName: "",
-          email: "",
-          message: "",
-          phone: "",
-        });
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("BML Error:", data);
+        toast.error(data.error || "Payment failed to initialize");
+      } else if (data.redirect_url) {
+        window.location.href = data.redirect_url;
       } else {
-        setStatus("Failed to submit the appointment request.");
+        toast.error("No redirect URL from BML Gateway");
       }
     } catch (error) {
-      console.error(error);
-      setStatus("An error occurred. Please try again.");
+      console.error("Payment Error:", error);
+      toast.error("Something went wrong, please try again");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 flex-1">
-      <section className="mb-12 space-y-4">
-        <h1 className="header">MAKE AN APPOINTMENT </h1>
-        <p className="text-black">
-          Send us your details and schedule your appointment!
-        </p>
-      </section>
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-md mx-auto p-6 bg-white rounded-2xl shadow-lg space-y-4"
+    >
+      <h2 className="text-xl font-semibold text-gray-800 text-center">
+        Place Your Order
+      </h2>
+
       <div>
-        <label
-          htmlFor="customerName"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Customer Name
-        </label>
+        <label className="block text-sm text-gray-600">Full Name</label>
         <Input
-          onChange={handleChange}
-          id="name"
           name="name"
+          value={form.name}
+          onChange={handleChange}
+          placeholder="John Doe"
           required
-          className="mt-1"
-          value={formData.customerName}
         />
       </div>
+
       <div>
-        <label
-          htmlFor="productName"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Product Name
-        </label>
+        <label className="block text-sm text-gray-600">Email Address</label>
         <Input
-          onChange={handleChange}
-          id="name"
-          name="name"
-          required
-          className="mt-1"
-          value={formData.productName}
-        />
-      </div>
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Email
-        </label>
-        <Input
-          onChange={handleChange}
-          type="email"
-          id="email"
           name="email"
-          required
-          className="mt-1"
-          value={formData.email}
-        />
-      </div>
-      <div className="">
-        <label
-          htmlFor="phone"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Phone Number
-        </label>
-        <PhoneInput
-          country="mv"
-          value={formData.phone}
-          onChange={(phone) => setFormData({ ...formData, phone })}
-          placeholder="+960 000 0000"
-          inputProps={{
-            className: "flex flex-row ml-10 w-[93%] h-9 rounded-md",
-          }}
-        />
-      </div>
-      <div>
-        <label
-          htmlFor="message"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Message your treatment details
-        </label>
-        <Textarea
+          type="email"
+          value={form.email}
           onChange={handleChange}
-          id="message"
-          name="message"
-          rows={4}
+          placeholder="you@example.com"
           required
-          className="mt-1"
-          value={formData.message}
         />
       </div>
+
+      <div>
+        <label className="block text-sm text-gray-600">Amount (MVR)</label>
+        <Input
+          name="amount"
+          type="number"
+          value={form.amount}
+          onChange={handleChange}
+          placeholder="Enter amount"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm text-gray-600">Reference (optional)</label>
+        <Input
+          name="reference"
+          value={form.reference}
+          onChange={handleChange}
+          placeholder="Auto-generated if empty"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm text-gray-600">Notes (optional)</label>
+        <Textarea
+          name="notes"
+          value={form.notes}
+          onChange={handleChange}
+          placeholder="Any special instructions..."
+        />
+      </div>
+
       <Button
-            className="w-full"
-            size="lg"
-            disabled={isLoading}
-          >
-            {isLoading
-              ? "SENDING..."
-              :"SEND ORDER"}
-          </Button>
-      {status && <p className="mt-2 text-sm text-gray-600">{status}</p>}
+        type="submit"
+        disabled={loading}
+        className="w-full bg-red-600 hover:bg-red-700 text-white"
+      >
+        {loading ? "Redirecting to BML..." : "Proceed to Pay"}
+      </Button>
     </form>
   );
-};
-
-export default ProductOrderForm;
+}

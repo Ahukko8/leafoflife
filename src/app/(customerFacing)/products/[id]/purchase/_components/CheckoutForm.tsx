@@ -31,30 +31,30 @@ type CheckoutFormProps = {
 
 export function CheckoutForm({ product }: CheckoutFormProps) {
   return (
-      <div className="min-h-screen flex flex-col">
-        <NavBar/>
-        <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 py-8">
-          <div className="mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-              {/* Image Section */}
-              <div className="space-y-4">
-                <ImagePreview imagePath={product.imagePath} productName={product.name} />
-              </div>
+    <div className="min-h-screen flex flex-col">
+      <NavBar />
+      <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+        <div className="mt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            {/* Image Section */}
+            <div className="space-y-4">
+              <ImagePreview imagePath={product.imagePath} productName={product.name} />
+            </div>
 
-              {/* Product Info & Form Section */}
-              <div className="space-y-6">
-                <ProductInfo product={product} />
-                <Form
-                  productName={product.name}
-                  priceInCents={product.priceInCents}
-                  productId={product.id}
-                />
-              </div>
+            {/* Product Info & Form Section */}
+            <div className="space-y-6">
+              <ProductInfo product={product} />
+              <Form
+                productName={product.name}
+                priceInCents={product.priceInCents}
+                productId={product.id}
+              />
             </div>
           </div>
         </div>
-        <Footer />
       </div>
+      <Footer />
+    </div>
   );
 }
 
@@ -67,11 +67,11 @@ function ImagePreview({ imagePath, productName }: { imagePath: string; productNa
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!imageRef.current) return;
-    
+
     const rect = imageRef.current.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
-    
+
     setZoomPosition({ x, y });
     setMousePosition({ x: e.clientX, y: e.clientY });
   };
@@ -80,7 +80,7 @@ function ImagePreview({ imagePath, productName }: { imagePath: string; productNa
     <div className="space-y-4">
       {/* Main Image */}
       <Card className="overflow-hidden border-0 shadow-xl bg-white">
-        <div 
+        <div
           ref={imageRef}
           className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 cursor-crosshair group"
           onMouseMove={handleMouseMove}
@@ -94,7 +94,7 @@ function ImagePreview({ imagePath, productName }: { imagePath: string; productNa
             alt={productName}
             className="object-contain p-6 transition-transform duration-300"
           />
-          
+
           {/* Zoom overlay */}
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-5 transition-all duration-300 flex items-center justify-center">
             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white rounded-full p-3 shadow-lg">
@@ -104,7 +104,7 @@ function ImagePreview({ imagePath, productName }: { imagePath: string; productNa
 
           {/* Magnifier lens */}
           {showMagnifier && (
-            <div 
+            <div
               className="absolute w-32 h-32 border-2 border-blue-500 bg-blue-500 bg-opacity-10 rounded-full pointer-events-none hidden lg:block"
               style={{
                 left: `${zoomPosition.x}%`,
@@ -118,14 +118,14 @@ function ImagePreview({ imagePath, productName }: { imagePath: string; productNa
 
       {/* Floating magnified view - appears at cursor position like AliExpress */}
       {showMagnifier && (
-        <div 
+        <div
           className="fixed w-80 h-80 border-2 border-gray-300 bg-white rounded-lg shadow-2xl pointer-events-none z-50 hidden lg:block overflow-hidden"
           style={{
             left: `${mousePosition.x + 20}px`,
             top: `${mousePosition.y - 160}px`,
           }}
         >
-          <div 
+          <div
             className="w-full h-full bg-cover bg-no-repeat"
             style={{
               backgroundImage: `url(${imagePath})`,
@@ -163,8 +163,8 @@ function ImagePreview({ imagePath, productName }: { imagePath: string; productNa
 
       {/* Action buttons */}
       <div className="flex gap-2">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="flex-1 border-gray-200 hover:bg-gray-50"
           onClick={() => setIsZoomed(true)}
         >
@@ -182,8 +182,8 @@ function ProductInfo({ product }: { product: CheckoutFormProps['product'] }) {
       <CardContent className="p-6 space-y-4">
         <div>
           <Link href="/products" className="flex gap-1 text-xs text-green-600 hover:text-green-700">
-          <CircleArrowLeft size={15}/>
-          Go back      
+            <CircleArrowLeft size={15} />
+            Go back
           </Link>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
           <div className="flex items-baseline gap-2 mb-4">
@@ -193,7 +193,7 @@ function ProductInfo({ product }: { product: CheckoutFormProps['product'] }) {
             <span className="text-sm text-gray-500">per item</span>
           </div>
         </div>
-        
+
         <div className="border-t pt-4">
           <h3 className="font-semibold text-gray-900 mb-2">Product Description</h3>
           <p className="text-gray-600 leading-relaxed">{product.description}</p>
@@ -247,50 +247,12 @@ function Form({
   };
 
   const handleQuantityChange = (increment: boolean) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      quantity: increment 
-        ? prev.quantity + 1 
-        : Math.max(1, prev.quantity - 1)
+      quantity: increment
+        ? prev.quantity + 1
+        : Math.max(1, prev.quantity - 1),
     }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrorMessage(undefined);
-
-    try {
-      const response = await fetch("/api/sendProducts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        toast({
-          description: "Your order has been sent successfully! We will contact you shortly.",
-          className: "border-green-500 bg-green-50 text-green-800",
-        });
-        setFormData({
-          customerName: "",
-          productName,
-          productId,
-          priceInCents,
-          quantity: 1,
-          email: "",
-          message: "",
-          phone: "",
-        });
-        router.push("/products");
-      } else {
-        setErrorMessage("Failed to submit the order. Please try again.");
-      }
-    } catch (error) {
-      setErrorMessage("An error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -298,15 +260,82 @@ function Form({
     setFormData((prev) => ({ ...prev, phone: onlyNums }));
   };
 
-  return (
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setErrorMessage(undefined);
+
+  try {
+    // Calculate total in MVR
+    const totalInMVR = priceInCents * formData.quantity;
+
+    // Send order details to your backend (for Telegram notification)
+    const requestBody = {
+      customerName: formData.customerName,
+      customerEmail: formData.email,
+      phone: formData.phone,
+      productName: formData.productName,
+      productId: formData.productId,
+      quantity: formData.quantity,
+      amount: totalInMVR,
+      priceInCents: priceInCents,
+    };
+
+    console.log("🚀 Sending order notification:", requestBody);
+
+    // Send to your API for Telegram notification
+    const response = await fetch("/api/sendProducts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      console.warn("⚠️ Notification failed, but continuing to payment...");
+    } else {
+      console.log("✅ Order notification sent successfully");
+    }
+
+    // Show success toast
+    toast({
+      description: `Order submitted! Total: MVR ${totalInMVR.toFixed(2)}. Please enter this amount on the payment page.`,
+        className: "border-green-500 bg-green-50 text-green-800",
+        duration: 15000, // Show for 15 seconds
+    });
+
+    // Redirect to BML payment page in new tab
+    setTimeout(() => {
+      window.open("https://shop.merchants.bankofmaldives.com.mv/6905f62f4e2ff463aaa4fa9d", "_blank");
+      
+      // Show confirmation message
+      toast({
+        description: `Order submitted! Total: MVR ${totalInMVR.toFixed(2)}. Please enter this amount on the payment page.`,
+        className: "border-green-500 bg-green-50 text-green-800",
+        duration: 15000, // Show for 15 seconds
+      });
+      
+      setIsLoading(false);
+    }, 3000);
+
+  } catch (error: any) {
+    console.error("🔥 Order submission error:", error);
+    setErrorMessage(error.message || "Something went wrong. Please try again.");
+    toast({
+      description: "Failed to submit order. Please try again.",
+      className: "border-red-500 bg-red-50 text-red-700",
+    });
+    setIsLoading(false);
+  }
+};  return (
     <Card className="border-0 shadow-xl bg-white">
       <CardHeader className="pb-4">
         <CardTitle className="text-2xl text-gray-900 flex items-center gap-2">
           <ShoppingCart className="w-6 h-6" />
-          Place Your Order
+          Pay with BML
         </CardTitle>
         <CardDescription className="text-gray-600">
-          Fill in your details below and we will contact you to confirm your order
+          Fill in your details below to proceed with your payment securely via
+          Bank of Maldives.
         </CardDescription>
         {errorMessage && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-3">
@@ -319,10 +348,15 @@ function Form({
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Customer Info */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900 border-b pb-2">Customer Information</h3>
+            <h3 className="font-semibold text-gray-900 border-b pb-2">
+              Customer Information
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="customerName" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="customerName"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Full Name *
                 </label>
                 <Input
@@ -337,7 +371,10 @@ function Form({
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Email Address *
                 </label>
                 <Input
@@ -353,7 +390,10 @@ function Form({
               </div>
 
               <div className="md:col-span-2">
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Phone Number *
                 </label>
                 <Input
@@ -361,7 +401,7 @@ function Form({
                   type="tel"
                   name="phone"
                   required
-                  pattern="^\+?([0-9]{1,3})?[-.\s]?([0-9]{6,14})$"
+                  pattern="^\\+?([0-9]{1,3})?[-.\\s]?([0-9]{6,14})$"
                   placeholder="+960 xxx xxxx"
                   value={formData.phone}
                   onChange={handlePhoneInput}
@@ -373,8 +413,10 @@ function Form({
 
           {/* Order Details */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900 border-b pb-2">Order Details</h3>
-            
+            <h3 className="font-semibold text-gray-900 border-b pb-2">
+              Order Details
+            </h3>
+
             {/* Quantity Selector */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -410,7 +452,9 @@ function Form({
             <div className="bg-gray-50 rounded-lg p-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Unit Price:</span>
-                <span className="font-medium">{formatCurrency(priceInCents)}</span>
+                <span className="font-medium">
+                  {formatCurrency(priceInCents)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Quantity:</span>
@@ -423,22 +467,6 @@ function Form({
                 </span>
               </div>
             </div>
-
-            {/* Optional Message */}
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                Additional Message (Optional)
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-                placeholder="Any special requirements or notes..."
-              />
-            </div>
           </div>
 
           {/* Submit Button */}
@@ -446,17 +474,17 @@ function Form({
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center gap-2">
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Sending Order...
+                  Redirecting...
                 </div>
               ) : (
                 <div className="flex items-center justify-center gap-2">
                   <ShoppingCart className="w-5 h-5" />
-                  Send Order - {formatCurrency(totalPrice)}
+                  Pay Now - {formatCurrency(totalPrice)}
                 </div>
               )}
             </Button>

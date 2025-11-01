@@ -3,70 +3,92 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { amount, reference, customerEmail, customerName } = body;
+    console.log("📥 Received order:", body);
 
-    if (!amount || !reference || !customerEmail || !customerName) {
+    const { 
+      customerName, 
+      customerEmail, 
+      phone, 
+      productName, 
+      productId, 
+      quantity, 
+      amount,
+      priceInCents 
+    } = body;
+
+    // Validation
+    if (!customerName || !customerEmail || !productName || !quantity) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    const BML_GATEWAY_URL = process.env.BML_GATEWAY_URL!;
-    const BML_APPLICATION_ID = process.env.BML_APPLICATION_ID!;
-    const BML_API_KEY = process.env.BML_API_KEY!;
-    const RETURN_URL = process.env.NEXT_PUBLIC_BML_RETURN_URL!;
-    const CANCEL_URL = process.env.NEXT_PUBLIC_BML_CANCEL_URL!;
+    // Get Telegram credentials
+    const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+    const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-    // Convert amount to Lari (multiply by 100)
-    const amountInLari = Math.round(Number(amount) * 100);
+    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+      console.error("❌ Missing Telegram credentials");
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 }
+      );
+    }
 
-    // BML Payment Payload
-    const payload = {
-      amount: amountInLari, // Amount in Lari (e.g., 100.00 MVR = 10000)
-      currency: "MVR",
-      reference,
-      customerEmail,
-      customerName,
-      redirectUrl: RETURN_URL,
-      cancelUrl: CANCEL_URL,
-    };
+    // Format the message
+    const message = `
+🛒 *NEW ORDER RECEIVED*
 
-    console.log("📦 Sending to BML:", payload);
+👤 *Customer Details:*
+Name: ${customerName}
+Email: ${customerEmail}
+Phone: ${phone || 'Not provided'}
 
-    // Send payment request
-    const response = await fetch(`${BML_GATEWAY_URL}/api/payment`, {
+📦 *Order Details:*
+Product: ${productName}
+Product ID: ${productId}
+Quantity: ${quantity}
+Unit Price: MVR ${priceInCents.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+*Total Amount: MVR ${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*
+
+💳 *Payment Status:* Pending (Customer redirected to BML)
+
+⏰ Time: ${new Date().toLocaleString('en-US', { timeZone: 'Indian/Maldives' })}
+    `.trim();
+
+    // Send to Telegram
+    const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    
+    const telegramResponse = await fetch(telegramUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "applicationId": BML_APPLICATION_ID,
-        "Authorization": `Bearer ${BML_API_KEY}`,
-      },
-      body: JSON.stringify(payload),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: message,
+        parse_mode: "Markdown",
+      }),
     });
 
-    const data = await response.json();
-    console.log("💳 BML Response:", data);
+    const telegramData = await telegramResponse.json();
 
-    if (!response.ok) {
+    if (!telegramResponse.ok) {
+      console.error("❌ Telegram API Error:", telegramData);
       return NextResponse.json(
-        { error: "BML Error", details: data },
-        { status: 400 }
+        { error: "Failed to send notification", details: telegramData },
+        { status: 500 }
       );
     }
 
-    const redirectUrl = data?.url || data?.redirectUrl;
+    console.log("✅ Telegram notification sent successfully");
 
-    if (!redirectUrl) {
-      return NextResponse.json(
-        { error: "No redirect URL returned by BML", details: data },
-        { status: 400 }
-      );
-    }
+    return NextResponse.json({ 
+      success: true,
+      message: "Order notification sent successfully"
+    });
 
-    return NextResponse.json({ redirect_url: redirectUrl });
   } catch (error: any) {
-    console.error("🔥 BML Integration Error:", error);
+    console.error("🔥 Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error", details: error.message },
       { status: 500 }

@@ -1,3 +1,4 @@
+// @ts-ignore
 import "@/src/app/(customerFacing)/appointments/globals.css";
 import PatientForm from "@/src/components/forms/PatientForm";
 import Footer from "@/src/components/homePage/Footer";

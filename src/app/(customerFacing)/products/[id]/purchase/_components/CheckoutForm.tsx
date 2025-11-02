@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/src/components/ui/button";
@@ -13,10 +13,21 @@ import {
 import { Input } from "@/src/components/ui/input";
 import { useToast } from "@/components/hooks/use-toast";
 import { formatCurrency } from "@/lib/formatters";
-import { Minus, Plus, ShoppingCart, Eye, X, ZoomIn, ArrowLeftIcon, CircleArrowLeft } from "lucide-react";
+import { 
+  Minus, 
+  Plus, 
+  ShoppingCart, 
+  Eye, 
+  X, 
+  ZoomIn, 
+  CircleArrowLeft,
+  MapPin,
+  Package 
+} from "lucide-react";
 import Footer from "@/src/components/homePage/Footer";
 import NavBar from "@/src/components/Navbar";
 import Link from "next/link";
+import { PhoneInput } from 'react-international-phone';
 
 type CheckoutFormProps = {
   product: {
@@ -116,7 +127,7 @@ function ImagePreview({ imagePath, productName }: { imagePath: string; productNa
         </div>
       </Card>
 
-      {/* Floating magnified view - appears at cursor position like AliExpress */}
+      {/* Floating magnified view */}
       {showMagnifier && (
         <div
           className="fixed w-80 h-80 border-2 border-gray-300 bg-white rounded-lg shadow-2xl pointer-events-none z-50 hidden lg:block overflow-hidden"
@@ -136,7 +147,7 @@ function ImagePreview({ imagePath, productName }: { imagePath: string; productNa
         </div>
       )}
 
-      {/* Full screen modal - Fixed */}
+      {/* Full screen modal */}
       {isZoomed && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-95 flex items-center justify-center p-4">
           <div className="relative w-full h-full max-w-6xl max-h-full flex items-center justify-center">
@@ -230,8 +241,12 @@ function Form({
     priceInCents,
     quantity: 1,
     email: "",
-    message: "",
     phone: "",
+    shippingAddress: "",
+    shippingCity: "",
+    shippingState: "",
+    shippingPostalCode: "",
+    shippingCountry: "Maldives",
   });
 
   const totalPrice = priceInCents * formData.quantity;
@@ -255,78 +270,86 @@ function Form({
     }));
   };
 
-  const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const onlyNums = e.target.value.replace(/[^\d+]/g, "");
-    setFormData((prev) => ({ ...prev, phone: onlyNums }));
+  const handlePhoneChange = (phone: string) => {
+    setFormData((prev) => ({ ...prev, phone }));
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsLoading(true);
-  setErrorMessage(undefined);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage(undefined);
 
-  try {
-    // Calculate total in MVR
-    const totalInMVR = priceInCents * formData.quantity;
+    try {
+      const totalInMVR = priceInCents * formData.quantity;
 
-    // Send order details to your backend (for Telegram notification)
-    const requestBody = {
-      customerName: formData.customerName,
-      customerEmail: formData.email,
-      phone: formData.phone,
-      productName: formData.productName,
-      productId: formData.productId,
-      quantity: formData.quantity,
-      amount: totalInMVR,
-      priceInCents: priceInCents,
-    };
+      const requestBody = {
+        // Customer Information
+        customerName: formData.customerName,
+        customerEmail: formData.email,
+        phone: formData.phone,
+        
+        // Product Information
+        productName: formData.productName,
+        productId: formData.productId,
+        quantity: formData.quantity,
+        amount: totalInMVR,
+        priceInCents: priceInCents,
+        
+        // Shipping Address
+        shippingAddress: formData.shippingAddress,
+        shippingCity: formData.shippingCity,
+        shippingState: formData.shippingState,
+        shippingPostalCode: formData.shippingPostalCode,
+        shippingCountry: formData.shippingCountry,
+        
+        // Full formatted shipping address for easy display
+        fullShippingAddress: `${formData.shippingAddress}, ${formData.shippingCity}, ${formData.shippingState}${formData.shippingPostalCode ? ', ' + formData.shippingPostalCode : ''}, ${formData.shippingCountry}`,
+      };
 
-    console.log("🚀 Sending order notification:", requestBody);
+      console.log("🚀 Sending order notification:", requestBody);
 
-    // Send to your API for Telegram notification
-    const response = await fetch("/api/sendProducts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestBody),
-    });
+      const response = await fetch("/api/sendProducts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
 
-    if (!response.ok) {
-      console.warn("⚠️ Notification failed, but continuing to payment...");
-    } else {
-      console.log("✅ Order notification sent successfully");
-    }
+      if (!response.ok) {
+        console.warn("⚠️ Notification failed, but continuing to payment...");
+      } else {
+        console.log("✅ Order notification sent successfully");
+      }
 
-    // Show success toast
-    toast({
-      description: `Order submitted! Total: MVR ${totalInMVR.toFixed(2)}. Please enter this amount on the payment page.`,
-        className: "border-green-500 bg-green-50 text-green-800",
-        duration: 15000, // Show for 15 seconds
-    });
-
-    // Redirect to BML payment page in new tab
-    setTimeout(() => {
-      window.open("https://shop.merchants.bankofmaldives.com.mv/6905f62f4e2ff463aaa4fa9d", "_blank");
-      
-      // Show confirmation message
       toast({
         description: `Order submitted! Total: MVR ${totalInMVR.toFixed(2)}. Please enter this amount on the payment page.`,
         className: "border-green-500 bg-green-50 text-green-800",
-        duration: 15000, // Show for 15 seconds
+        duration: 15000,
       });
-      
-      setIsLoading(false);
-    }, 3000);
 
-  } catch (error: any) {
-    console.error("🔥 Order submission error:", error);
-    setErrorMessage(error.message || "Something went wrong. Please try again.");
-    toast({
-      description: "Failed to submit order. Please try again.",
-      className: "border-red-500 bg-red-50 text-red-700",
-    });
-    setIsLoading(false);
-  }
-};  return (
+      setTimeout(() => {
+        window.open("https://shop.merchants.bankofmaldives.com.mv/6905f62f4e2ff463aaa4fa9d", "_blank");
+        
+        toast({
+          description: `Payment page opened. Enter MVR ${totalInMVR.toFixed(2)} to complete your order.`,
+          className: "border-blue-500 bg-blue-50 text-blue-800",
+          duration: 15000,
+        });
+        
+        setIsLoading(false);
+      }, 3000);
+
+    } catch (error: any) {
+      console.error("🔥 Order submission error:", error);
+      setErrorMessage(error.message || "Something went wrong. Please try again.");
+      toast({
+        description: "Failed to submit order. Please try again.",
+        className: "border-red-500 bg-red-50 text-red-700",
+      });
+      setIsLoading(false);
+    }
+  };
+
+  return (
     <Card className="border-0 shadow-xl bg-white">
       <CardHeader className="pb-4">
         <CardTitle className="text-2xl text-gray-900 flex items-center gap-2">
@@ -348,7 +371,8 @@ const handleSubmit = async (e: React.FormEvent) => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Customer Info */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900 border-b pb-2">
+            <h3 className="font-semibold text-gray-900 border-b pb-2 flex items-center gap-2">
+              <Package className="w-5 h-5" />
               Customer Information
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -396,17 +420,125 @@ const handleSubmit = async (e: React.FormEvent) => {
                 >
                   Phone Number *
                 </label>
+                <div className="relative">
+                  <PhoneInput
+                    defaultCountry="mv"
+                    value={formData.phone}
+                    onChange={handlePhoneChange}
+                    inputClassName="!w-full !h-10 !px-3 !py-2 !border-gray-300 !rounded-md focus:!border-blue-500 focus:!ring-2 focus:!ring-blue-500 focus:!ring-opacity-50 !text-base"
+                    countrySelectorStyleProps={{
+                      buttonClassName: "!h-10 !border-gray-300 !rounded-l-md !px-3 !bg-white hover:!bg-gray-50 !transition-colors",
+                      dropdownStyleProps: {
+                        className: "!shadow-lg !border !border-gray-200 !rounded-md !mt-1",
+                        listItemClassName: "hover:!bg-gray-50 !px-3 !py-2 !cursor-pointer",
+                      }
+                    }}
+                    placeholder="Enter phone number"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Shipping Details */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-900 border-b pb-2 flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              Shipping Address
+            </h3>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label
+                  htmlFor="shippingAddress"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Street Address *
+                </label>
                 <Input
-                  id="phone"
-                  type="tel"
-                  name="phone"
+                  id="shippingAddress"
+                  name="shippingAddress"
                   required
-                  pattern="^\\+?([0-9]{1,3})?[-.\\s]?([0-9]{6,14})$"
-                  placeholder="+960 xxx xxxx"
-                  value={formData.phone}
-                  onChange={handlePhoneInput}
+                  value={formData.shippingAddress}
+                  onChange={handleChange}
                   className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="House/Building name, Street"
                 />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    htmlFor="shippingCity"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    City/Island *
+                  </label>
+                  <Input
+                    id="shippingCity"
+                    name="shippingCity"
+                    required
+                    value={formData.shippingCity}
+                    onChange={handleChange}
+                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="e.g., Malé, Hulhumalé"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="shippingState"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Atoll/State *
+                  </label>
+                  <Input
+                    id="shippingState"
+                    name="shippingState"
+                    required
+                    value={formData.shippingState}
+                    onChange={handleChange}
+                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="e.g., Kaafu, Addu"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    htmlFor="shippingPostalCode"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Postal Code
+                  </label>
+                  <Input
+                    id="shippingPostalCode"
+                    name="shippingPostalCode"
+                    value={formData.shippingPostalCode}
+                    onChange={handleChange}
+                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="e.g., 20000"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="shippingCountry"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Country *
+                  </label>
+                  <Input
+                    id="shippingCountry"
+                    name="shippingCountry"
+                    required
+                    value={formData.shippingCountry}
+                    onChange={handleChange}
+                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="e.g., Maldives"
+                  />
+                </div>
               </div>
             </div>
           </div>

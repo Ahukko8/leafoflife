@@ -13,7 +13,13 @@ export async function POST(req: Request) {
       productId, 
       quantity, 
       amount,
-      priceInCents 
+      priceInCents,
+      shippingAddress,
+      shippingCity,
+      shippingState,
+      shippingPostalCode,
+      shippingCountry,
+      fullShippingAddress
     } = body;
 
     // Validation
@@ -36,7 +42,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Format the message
+    // Format the message with shipping details
     const message = `
 🛒 *NEW ORDER RECEIVED*
 
@@ -51,6 +57,11 @@ Product ID: ${productId}
 Quantity: ${quantity}
 Unit Price: MVR ${priceInCents.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 *Total Amount: MVR ${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*
+
+📍 *Shipping Address:*
+${shippingAddress || 'Not provided'}
+${shippingCity || ''}${shippingState ? ', ' + shippingState : ''}
+${shippingPostalCode ? shippingPostalCode + ', ' : ''}${shippingCountry || ''}
 
 💳 *Payment Status:* Pending (Customer redirected to BML)
 
